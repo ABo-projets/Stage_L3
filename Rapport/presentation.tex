@@ -70,7 +70,7 @@
 	
 	\begin{frame}
 		\frametitle{Introduction}
-		\textbf{Side-Channel Attacks (SCA):} observation of timing, power consumption, electromagnetic radiation to discover a secret
+		\textbf{Side-Channel Attacks (SCA):} observation of computation time, power consumption, electromagnetic radiation, ... to discover a secret
 		
 		$\newline$
 		
@@ -83,7 +83,7 @@
 	\begin{frame}
 		\frametitle{Steps for a CPA attack}
 		
-		\begin{columns}
+		\begin{columns}[T]
 			\column{0.32\textwidth}
 			\textbf{Campagne:}\\
 			Choose:
@@ -108,12 +108,12 @@
 	\begin{frame}
 		\frametitle{Example on AES}
 		
-		\begin{columns}
+		\begin{columns}[T]
 			\column{0.32\textwidth}
 			\textbf{Campagne:}\\
 			\begin{itemize}
 				\item $k = $ one byte of the secret key $K_0$
-				\item $O_R = $ power consumption after the S-box
+				\item $O_R = $ power consumption during the S-box
 				\item $O_S = p$ one byte of the plaintext $T$
 			\end{itemize}
 			
@@ -158,13 +158,11 @@
 		Intern permutation: $p^8$\\
 		Extern permutation: $p^{12}$
 		
-		\begin{columns}
+		\begin{columns}[T]
 			\column{0.32\textwidth}
 			$$p_C$$
-			
-			\begin{figure}
-				{\tiny 
-					\raggedleft
+			$\newline$
+			{\tiny 
 				\begin{tabularx}{0.1\textwidth}{|*{8}{p{0.01cm}|}X}
 					\cline{1-8}
 					&&&&&&&&$S_0$\\
@@ -177,9 +175,8 @@
 					\cline{1-8}
 					&&&&&&&&$S_4$\\
 					\cline{1-8}
-				\end{tabularx}}
-				\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words{}}
-			\end{figure} 
+			\end{tabularx}}
+			%				\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words{}}
 			
 			\column{0.32\textwidth}
 			$$p_S$$
@@ -206,7 +203,7 @@
 	\begin{frame}
 		\frametitle{Encryption and decryption phases}	
 		\begin{itemize}
-			\item state creation and modification
+			\item Initialization: state creation and modification
 			$$S \leftarrow p^{a}( \underbrace{IV}_{S_0}||\underbrace{K}_{S_1,S_2}||\underbrace{n}_{S_3,S_4})$$
 			$$S \leftarrow S \oplus 0^{192} || K$$
 			\item Associated data process: updates the state using blocks of $r$-bits from $A=(A_1||..||A_s)$
@@ -214,7 +211,7 @@
 			\item Finalization: computes the tag thanks to the key and the state
 		\end{itemize}	
 	\end{frame}
-
+	
 	
 	\section{Methodology}
 	\subsection{Capture}
@@ -239,18 +236,94 @@
 	\subsection{Analysis}
 	\begin{frame}
 		\frametitle{Analyses done}
+		\begin{itemize}
+			\begin{columns}
+				\column{0.55\textwidth}
+				\item Finding the best theoretical attack path (HW vs value, vertical vs horizontal)
+				\item Comparing distinguishers (Pearson correlation vs mutual information)
+				\item Attack 1: finding the vertical output and deduct the key
+				\item Attack 2: finding the HW of the output
+				\column{0.4\textwidth}
+				\begin{figure}[h]
+					\centering
+					\begin{tabular}{|c|c|}
+						\hline
+						$(n_0^j,n_1^j,IV^j)$&$S_4^j$\\
+						\hline\hline
+						$(0,0,0)$&$k_0^j$\\
+						\hline
+						$(0,0,1)$&$0$\\
+						\hline
+						$(0,1,0)$&$1$\\
+						\hline
+						$(0,1,1)$&$1 \oplus k_0^j$\\
+						\hline
+						$(1,0,0)$&$1 \oplus k_0^j$\\
+						\hline
+						$(1,0,1)$&$1$\\
+						\hline
+						$(1,1,0)$&$0$\\
+						\hline
+						$(1,1,1)$&$k_0^j$\\
+						\hline
+					\end{tabular}
+					\caption{Link between $k_0^j$ and $S_4^j$ depending on $IV$ and $N$}
+					\label{link_k_s4}
+				\end{figure}
+			\end{columns}
+		\end{itemize}
 	\end{frame}
 	
 	
 	\section{Results}
 	\begin{frame}
-		\frametitle{Results}
+		\frametitle{Results vertical vs horizontal}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[scale=0.3]{h_and_v_one_byte}
+			\caption{Mutual information for the horizontal value in orange and the vertical value in blue}
+			\label{hvval}
+		\end{figure}
 	\end{frame}
 	
+	\begin{frame}
+		\frametitle{Results HW vs value}
+		\begin{figure}
+			\centering
+			\includegraphics[scale=0.3]{vertical_one_bit}
+			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ in orange and its value in blue}
+			\label{vHW}
+		\end{figure}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Results distinguisher}
+		\begin{figure}
+			\centering
+			\includegraphics[scale=0.3]{corr_vs_MI_hHW}
+			\caption{Mutual information (in orange) and absolute Pearson correlation (in blue) for a horizontal attack on the reference implementation}
+			\label{corvsMI}
+		\end{figure}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Results attack 1}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[scale=0.3]{nonces_alea}
+			\caption{Mutual information between the Hamming weight of the outputs and the power consumption, for each of the possible outputs for the first nonce}
+			\label{all_alea}
+		\end{figure}
+	\end{frame}
 	
 	\section{Conclusion}
 	\begin{frame}
 		\frametitle{Conclusion}
+		\begin{itemize}
+			\item Apparent weaknesses
+			\item Unsuccessful attempts
+			\item Leads to follow: belief propagation
+		\end{itemize}
 	\end{frame}
-
+	
 \end{document}

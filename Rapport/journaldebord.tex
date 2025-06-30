@@ -192,11 +192,11 @@
 	
 	\noindent \textbf{Réponse à une question :} Que veut dire ADC exactement ? ($\rightarrow$ Analog to Digital Converter) \\ Quand l'échantillon est trop bas, "no trigger seen" $\rightarrow$ nécessité de voir \verb|trigger_low| dans la capture, pas refaisable, des fois ça marche, des fois ça ne marche pas :
 	\begin{lstlisting}
-WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
-no trigger seen! Trigger forced, data is invalid. Status: 0b
-WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
-no trigger seen! Trigger forced, data is invalid. Status: 08
-WARNING:ChipWhisperer Scope:Timeout happened during capture
+		WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
+		no trigger seen! Trigger forced, data is invalid. Status: 0b
+		WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
+		no trigger seen! Trigger forced, data is invalid. Status: 08
+		WARNING:ChipWhisperer Scope:Timeout happened during capture
 	\end{lstlisting}
 	$\rightarrow$ problème de reset de la target probable, pas de réel problème lorsque tout est bien configuré, on peut aller très bas.
 	
@@ -254,7 +254,7 @@ WARNING:ChipWhisperer Scope:Timeout happened during capture
 	\section{Séance 5 : 23/05/2025}
 	\subsection{Notes de séance}
 	\noindent \textbf{Réponses aux questions :}
-		\begin{itemize}
+	\begin{itemize}
 		\item Mon temps de calcul est très important : est-ce normal à ce point ? $\rightarrow$ surtout corrélation de Pearson qui est un gros calcul. Ce serait plus rapide avec \verb|Julia|
 		\item Vérification de la clé : comment faire ? $\rightarrow$ juste lancement d'un programme qui teste sur plein de textes un chiffrement avec la clé de base et la clé trouvée, vérification de clé de dernier tour dans le fibs
 		\item \textbf{2.36} : regarder quel est le nombre de traces minimum requis pour que l'attaque retrouve toujours la clé
@@ -458,7 +458,7 @@ WARNING:ChipWhisperer Scope:Timeout happened during capture
 	Problème de capture de la trace, erreur probable sur le renvoi du chiffré, qu fait bugger les chargement et le calcul des traces : 
 	
 	\begin{lstlisting}
-WARNING:ChipWhisperer Target:Unexpected end to command: 9
+		WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\end{lstlisting}
 	
 	\noindent Probablement à cause de la capture de la cible, il n'arrive pas à trouver le chiffré ce qui cause entre autre ce Warning (et le fait que les chiffrés soient à \verb|None|).\\
@@ -514,7 +514,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 		De même, on récupère les octets de clé qui donnent la corrélation en absolu la plus élevée sur chaque colonne.
 		\item \textbf{Attaque de M. SARRY :} On sait déterminer la clé à partir de la sortie de la S-Box de premier tour de l'initialisation. Ainsi, une attaque établie avec succès retrouve les bits en sortie de la S-Box en fonction de la trace.
 	\end{itemize}
-
+	
 	\subsection{Résumé de séance}
 	\begin{itemize}
 		\item Tests pour trouver le bug de capture, capture de 3000 traces
@@ -629,7 +629,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\section{Séance 16 : 12/06/2025}
 	\subsection{Notes de séance}
 	\textbf{Réponse aux questions :}
-		\begin{itemize}
+	\begin{itemize}
 		\item Montrer les courbes : il y a un problème, la bonne clé ne semble pas être mise en avant. Est-ce que puisqu'on trouve la meilleure hypothèse de clé pour chaque clé 3 fois, il est raisonnable d'essayer de comparer ces trois calculs ? $\rightarrow$ utiliser éventuellement un algorithme de backtracking pour les hypothèses sur lesquelles on est pas sûr.e, corriger, regarder où sont les différences
 		\item Que représentent les graphes de Sarry exactement ? L'information mutuelle entre quoi et quoi ? Entre le paramètre (horizontal/vertical, valeur, poids de Hamming) et une hypothèse de clé ? Une hypothèse d'octet de sortie ? Pour quelle hypothèse ? Est-ce un graphe ne traitant qu'une seule hypothèse d'octet ? $\rightarrow$ Les graphes représenteraient l'information mutuelle en fonction du temps entre la consommation de courant et l'hypothèse prise en entrée, afin de trouver l'hypothèse sur laquelle faire l'attaque (l'attaque n'a pas du tout été faite)
 		\item Comment calcule-t-il l'information mutuelle ? Comment connaît-il la probabilité d'une valeur s'il ne répète l'expérience qu'une seule fois ? $\rightarrow$ même si on est à clé variable, il ne fait que regarder le lien entre la sortie (l'octet écrit) et la consommation
@@ -840,7 +840,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\section{Séance 22 : 20/06/2025}
 	\subsection{Notes de séance}
 	\textbf{Réponse aux questions :}
-		\begin{itemize}
+	\begin{itemize}
 		\item Vérifier l'analyse des graphes de la séance \ref{s19} afin de pouvoir rédiger les interprétations et conclusions du leak dans le rapport
 		\item Dans l'implémentation de référence, à quoi sert le paramètre nsec ? Il est juste utilisé pour \verb|(void) nsec);| au début du chiffrement et du déchiffrement. $\rightarrow$ à rien certainement juste utilisé pour ressembler à la norme
 		\item Dans l'implémentation de référence, on inclut un fichier qui n'existe pas (agaçant, mais facile à réécrire) et on déchiffre peu importe l'intégrité, c'est un peu problématique, non ? $\rightarrow$ pas grave
@@ -907,7 +907,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\subsection{Objectifs de la séance prochaine}
 	\begin{todolist}
 		\item[\done] Comprendre le problème évoqué dans le carnet $\rightarrow$ on n'a pas assez de valeurs de nonces possibles, doc les variations sont les mêmes partout
-		\item \'Etudier la réponse d'Hélène 
+		\item[\done] \'Etudier la réponse d'Hélène 
 		\item[\done] Trouver une autre idée d'attaque ou une preuve se raccrochant à l'article de Cascade pour voir que même en pouvant choisir son nonce, on est embêté $\rightarrow$ j'ai vraiment l'impression que c'est exactement la même attaque
 		\item[\done] Voir si en choisissant des nonces plus aléatoires, donc qui ne respectent pas nécessairement les équations de Modou pour chaque nonce, ça marche mieux (pas l'air si on réfléchit rapidement)
 	\end{todolist}
@@ -931,7 +931,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	
 	\subsection{Objectifs de la séance prochaine}
 	\begin{todolist}
-		\item Rendez-vous avec Hélène
+		\item[\done] Rendez-vous avec Hélène
 		\item[\done] Commencer présentation
 	\end{todolist}
 	
@@ -960,15 +960,45 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\subsection{Objectifs de la séance prochaine}
 	\begin{todolist}
 		\item[\done] Relire rapport
-		\item Envoyer le rapport
-		\item Continuer/finir diaporama
-		\item Envoyer diaporama
-		\item Essayer attaque discutée (voir notes de cours du jour)
+		\item[\done] Envoyer le rapport
+		\item[\done] Continuer/finir diaporama
+		\item[\done] Envoyer diaporama
+		\item[\done] Essayer attaque discutée (voir notes de cours du jour)
+	\end{todolist}
+	
+	
+	\section{Séance 27 : 27/06/2025}
+	\subsection{Notes de séance}
+	Problèmes informatiques et visite, donc rien de concret...
+	
+	\section{Séance 28: 30/06/2025}
+	\subsection{Notes de séance}
+	On voit bien que le poids de Hamming fuite bien, car lorsqu'on compare les bons poids par rapport à des poids aléatoires, l'un a des points d'intérêt et pas l'autre. Voir le graphe suivant:
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.8]{HWvrai_vs_HWalea}
+		\caption{Information mutuelle entre la consommation et les vrais poids de Hamming en bleu et entre la consommation et des valeurs aléatoires en orange}
+	\end{figure}
+	
+	Le problème étant que ça voudrait dire que notre attaque devrait au moins marcher un peu...
+	
+	\subsection{Résumé de séance}
+	\begin{itemize}
+		\item Finission du diaporama et envoi du diaporama et rapport
+		\item Visite du LHS
+		\item Vérification de la fuite du poids de Hamming
+	\end{itemize}
+	
+	\subsection{Objectifs de la séance prochaine}
+	\begin{todolist}
+		\item Trouver une idée de quoi en faire maintenant qu'on sait que le poids de Hamming fuit bien
+		\item Relire à tête reposée l'attaque DPA, une dernière fois
 	\end{todolist}
 	
 	
 	\section{Questions pour l'entretien hebdomadaire}
-
-
-
+	
+	
+	
 \end{document}

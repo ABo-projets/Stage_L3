@@ -46,13 +46,15 @@
 		\item[\done] Implémentation d'une attaque CPA classique verticale
 		\item[\done] Modifier ces 2 attaques précédentes pour qu'elles suivent les articles lus
 		\item Corriger les attaques supposées fonctionner
-		\item Regarder si l'attaque qui ne fonctionne pas ne fonctionnerait quand-même pas un peu
+		\item[\done] Regarder si l'attaque qui ne fonctionne pas ne fonctionnerait quand-même pas un peu
 		\item[\done] Comparer les fuites verticales et horizontales pour déterminer ce qui fuit le plus dans une S-Box
 		\item[\done] Refaire ces attaques sur l'implémentation de référence pour comparer les différences de fuite par rapport aux différences d'implémentation
 		\item[\done] Réfléchir à un nouveau chemin d'attaque pour les équations de Modou, suivant les équations et ce qui fuite bien
-		\item Réaliser ce chemin d'attaque
-		\item Rédaction du rapport
-		\item Préparation de la présentation
+		\item[\done] Réaliser ce chemin d'attaque
+		\item[\done] Rédaction du rapport
+		\item[\done] Préparation de la présentation
+		\item Corriger rapport et présentation selon les recommendations
+		\item Trouver des idées de raison pour laquelle la clé fuite mal
 		\item Implémenter Ascon protégé
 		\item Essayer d'attaquer de même Ascon protégé
 	\end{todolist}
@@ -992,12 +994,41 @@
 	
 	\subsection{Objectifs de la séance prochaine}
 	\begin{todolist}
-		\item Trouver une idée de quoi en faire maintenant qu'on sait que le poids de Hamming fuit bien
-		\item Relire à tête reposée l'attaque DPA, une dernière fois
+		\item[\done] Trouver une idée de quoi en faire maintenant qu'on sait que le poids de Hamming fuit bien
+		\item[\done] Réessayer l'expérience des HW, sauf que cette fois on ne choisit pas d'antécédent particulier, juste on regarde ce qui pique le mieux entre des HW aléatoiers et les vrais
+		\item[\done] Relire à tête reposée l'attaque DPA, une dernière fois
+		\item[\done] Refaire les graphes avec un légende (si possible plus clairs)
+		\item Répondre au mail pour la présentation
+	\end{todolist}
+	
+	
+	\section{Séance 29 : 1/07/2025}
+	\subsection{Notes de séance}
+	Maintenant qu'on sait que le poids de Hamming fuit bien, on arrive à la conclusion que si on prend une mauvaise hypothèse, puisque la s-box est suppozée avoir un comportement aléatoire, alors le HW de sortie est random et ne devrait pas piquer. En revanche, si c'est le bon Hamming Weight, ça ne devrait pas piquer.
+	
+	\noindent \textbf{Observatins :} De manière très intéressante, on voit bien qu'il y a des points d'intérêts si ce sont les bons HW et il n'y en a pas si ce sont des HW aléatoires. De plus, tous les HW d'un même octet ont des points d'intérêts simultanés, mais pour plusieurs octets, c'est sucessif. Est-ce que tous lse calculs verticaux d'un même octet sont simultanés ? Lorsqu'on a des clés et nonces parfaitement aléatoires, on peut distinguer les vrais sorties de sorties aléatoires grâce à leu poids de Hamming.
+	
+	\noindent Assez étonnament, quand c'est la clé qu'on fait varier, l'hypothèse fausse est très proche derrière...
+	
+	\subsection{Résumé de séance}
+	\begin{itemize}
+		\item Différents exemples pour comparer des faux poids de Hamming avec les vrais
+		\item Maintenant comparer les vrais poids de Hamming pour les fausses clés : i.e. comme avant pour deux clés et on regarde la corrélation avec la bonne clé ou avec la mauvaise
+	\end{itemize}
+	
+	\subsection{Objectifs de la séance prochaine}
+	\begin{todolist}
+		\item[\done] Refaire les graphes
+		\item Répondre au mail
+		\item Corriger la présentation
+		\item Réfléchir à pourquoi la fausse clé donne une bonne corrélation : la s-box devrait disperser
 	\end{todolist}
 	
 	
 	\section{Questions pour l'entretien hebdomadaire}
+	\begin{itemize}
+		\item Comment ça se fait que pour des faux HW, on est une IM négligeable, mais que pour des fausses clés, supposées donc donner des HW aléatoires par hypothèse crypto, on ait une corrélation ?
+	\end{itemize}
 	
 	
 	

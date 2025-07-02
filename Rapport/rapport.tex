@@ -193,8 +193,8 @@
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{horizontal_one_byte}
-		\caption{Graph of the mutual information between the power consumption and the Hamming weight of the first byte of $S_4$ in blue and its value in orange, as a function of time}
+		\includegraphics[scale=0.4]{horizontal_one_byte}
+		\caption{Mutual information between the power consumption and the Hamming weight or the value of the first byte of $S_4$}
 		\label{hHW&val}
 	\end{figure}
 	
@@ -202,15 +202,15 @@
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{hHW_8_bytes_zoom}
-		\caption{Mutual information between power consumption and Hamming weight of each of the 8 bytes as functions of time}
+		\includegraphics[scale=0.4]{hHW_8_bytes_zoom}
+		\caption{Mutual information between power consumption and Hamming weight of each of the 8 bytes}
 		\label{hHW8_zoom}
 	\end{figure}
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{comp_ref_hHW}
-		\caption{Mutual information between power consumption and horizontal Hamming Weight on the reference implementation in blue and on our own in orange}
+		\includegraphics[scale=0.4]{comp_ref_hHW}
+		\caption{Mutual information between power consumption and horizontal Hamming Weight on the reference implementation and on our own}
 		\label{compref}
 	\end{figure}
 	
@@ -218,8 +218,8 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.3]{corr_vs_MI_hHW}
-		\caption{Mutual information (in orange) and absolute Pearson correlation (in blue) for a horizontal attack on the reference implementation}
+		\includegraphics[scale=0.4]{corr_vs_MI_hHW}
+		\caption{Normalized mutual information and absolute Pearson correlation for a horizontal attack on the reference implementation}
 		\label{corvsMI}
 	\end{figure}
 	
@@ -230,26 +230,26 @@
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{vertical_one_bit}
-		\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ in orange and its value in blue}
+		\includegraphics[scale=0.4]{vertical_one_bit}
+		\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ and its value}
 		\label{vHW}
 	\end{figure}
 	
-	\begin{figure}[h]
-		\centering
-		\includegraphics[scale=0.3]{vertical_one_byte}
-		\caption{Same thing as \ref{vHW} but for random nonces ith Hamming weight in blue and value in orange}
-		\label{vHW&val}
-	\end{figure}
+	%		\begin{figure}[h]
+		%			\centering
+		%			\includegraphics[scale=0.3]{vertical_one_byte}
+		%			\caption{Same thing as \ref{vHW} but for random nonces ith Hamming weight in blue and value in orange}
+		%			\label{vHW&val}
+		%		\end{figure}
 	
-	From the graph \ref{vHW}, it seems that there are also vertical leaks, which are clearer in Hamming weight than in value. Furthermore, the graph \ref{vHW&val} also illustrates the leaks, which are obviously more noisy with variable nonces.
+	From the graph \ref{vHW}, it seems that there are also vertical leaks, which are clearer in Hamming weight than in value. Furthermore, studying variable nonces also illustrates the leaks, which are however logically more noisy with variable nonces.
 	
 	Finally, let's compare horizontal and vertical leaks with graph \ref{hvval}. Counterintuitively, horizontal and vertical points of interest seem to coincide, which refutes the hypothesis that there first is a leak because of the computation then a next one because of writing in the register. A possible explanation would be that the mutual information is induced by the value of the bit that is both there horizontally and vertically, which could explain why correlations and mutual information are so low. However the vertical leaks seem to be clearer, which seems to indicate that the computation leaks a lot, and it gives the attacker a clearer theoretical attack path. Furthermore, the chosen distinguisher for the following analysis will be the mutual information, which looks slightly clearer.
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{h_and_v_one_byte}
-		\caption{Mutual information for the horizontal value in orange and the vertical value in blue}
+		\includegraphics[scale=0.4]{h_and_v_one_byte}
+		\caption{Normalized mutual information for the horizontal and vertical Hamming weight}
 		\label{hvval}
 	\end{figure}
 	
@@ -321,15 +321,15 @@
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{nonces_half_fixed}
-		\caption{Mutual information between the Hamming weight of the outputs and the power consumption, for each of the possible outputs for the first nonce with half of its bits fixed to use the equations}
+		\includegraphics[scale=0.4]{nonces_half_fixed}
+		\caption{Mutual information between the Hamming weight of the outputs (associated key in the legend) and the power consumption, for each of the possible outputs for the first nonce with half of its bits fixed to use the equations}
 		\label{half_fixed}
 	\end{figure}
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[scale=0.3]{nonces_alea}
-		\caption{Mutual information between the Hamming weight of the outputs and the power consumption, for each of the possible outputs for the first nonce with all its bits random}
+		\includegraphics[scale=0.4]{nonces_alea}
+		\caption{Mutual information between the Hamming weight of the outputs and the power consumption, for each of the possible outputs (with the associated key in the legend) for the first nonce with all its bits random}
 		\label{all_alea}
 	\end{figure}
 	

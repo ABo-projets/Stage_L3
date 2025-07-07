@@ -1,0 +1,66 @@
+\resizebox{190pt}{70pt}{
+	
+\begin{tikzpicture}[node distance = 1cm and 0.75cm]
+
+% 1er tour chiffrement
+
+\node[XOR, right = of dom.east|-helpnorth] (x1) {};
+\node[AE_msg, above = of x1] (m1) {$P_1$};
+\node[AE_ctx, right = of m1] (c1) {$C_1$};
+
+\draw[-{Latex[length=2mm]}] (pa2.east|-x1) -- (x1);
+\draw[-{Latex[length=2mm]}] (x1) -- (m1) node[midway] {$/$} node[midway, left=0.2cm] {\small $128$};
+\draw[-{Latex[length=2mm]}] (c1) |- (x1) node[near end] {$/$} node[near end, above=0.2cm] {\small $128$};
+
+\node at (x1-|c1) {$\bullet$};
+
+% 2e tour chiffrement
+
+\node[AE_P, minimum height = 3.75cm, right = of c1|-pa2] (p1) {$p^{8}$};
+
+\draw[-{Latex[length=2mm]}] (x1) -- (x1-|p1.west);
+\draw[-{Latex[length=2mm]}] (xdom) -- (p1.west|-helpsouth);
+
+\node[right = of p1.east|-helpnorth, inner sep = 10pt] (cdotnorth) {$\cdots$};
+\node[right = of p1.east|-helpsouth, inner sep = 10pt] (cdotsouth) {$\cdots$};
+
+\node[XOR, right = of cdotnorth] (x2) {};
+\node[AE_msg, above = of x2] (m2) {$P_{t-1}$};
+\node[AE_ctx, right = of m2] (c2) {$C_{t-1}$};
+
+
+\draw[line] (p1.east|-cdotnorth) -- (cdotnorth);
+\draw[line] (p1.east|-cdotsouth) -- (cdotsouth);
+
+\draw[-{Latex[length=2mm]}] (cdotnorth) -- (x2);
+\draw[-{Latex[length=2mm]}] (x2) -- (m2) node[midway] {$/$} node[midway, left=0.2cm] {\small $128$};
+\draw[-{Latex[length=2mm]}] (c2) |- (x2) node[near end] {$/$} node[near end, above=0.2cm] {\small $128$};
+
+\node at (x2-|c2) {$\bullet$};
+
+
+% fin chiffrement
+
+\node[AE_P, minimum height = 3.75cm, right = of c2|-p1] (p2) {$p^{8}$};
+
+\draw[-{Latex[length=2mm]}] (x2) -- (x2-|p2.west);
+\draw[-{Latex[length=2mm]}] (cdotsouth) -- (p2.west|-cdotsouth);
+
+\node[XOR, right = of p2.east|-x1] (x3) {};
+\node[XOR, below = of x3] (x4) {};
+\node[AE_msg, above = of x3, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
+    }] (m3) {$P_{t}$};
+\node[AE_ctx, right = of m3, text width = 0.75cm] (c3) {$C_{t}$};
+\node[AE_key, fill = gray!20, below = of x4] (dom) {$10^*$};
+
+\draw[-{Latex[length=2mm]}] (p2.east|-x3) -- (x3);
+\draw[-{Latex[length=2mm]}] (x3) -- (m3) node[midway] {$/$} node[midway, left=0.2cm] {\small $l$};
+\draw[-{Latex[length=2mm]}] (c3) |- (x3) node[near end] {$/$} node[near end, above=0.2cm] {\small $l$};
+\draw[-{Latex[length=2mm]}] (p2.east|-x4) -- (x4)node[midway] {$/$} node[midway, above=0.2cm] {\scriptsize $128-l$};
+\draw[-{Latex[length=2mm]}] (dom) -- (x4);
+
+\node at (x3-|c3) {$\bullet$};
+
+\end{tikzpicture}
+}

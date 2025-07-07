@@ -1,0 +1,172 @@
+\resizebox{250pt}{50pt}{
+	
+\begin{tikzpicture}[node distance = 1cm and 0.75cm]
+
+% init
+\node[AE_P, minimum height = 3.75cm] (pi) {$p^{12}$};
+
+\node[AE_vert, fill = gray!20, left = of pi.north west, anchor = north east, minimum height = 0.75cm] (iv) {$IV$}; 
+
+\node[AE_vert, fill = red!20, anchor = north] (k)  at (iv.south) {$K$}; 
+\node[AE_vert, fill = blue!20, left = of pi.south west, anchor = south east] (n) {$N$}; 
+
+\coordinate (helpsouth) at ($(pi.south east)!1/6!(pi.north east)$);
+\coordinate (helpnorth) at ($(pi.south east)!5/6!(pi.north east)$);
+
+\draw[-{Latex[length=2mm]}] (iv.east|-helpnorth) -> (helpnorth-|pi.west) node[midway] {$/$} node[midway, below=0.2cm] {\small $64$};
+\draw[-{Latex[length=2mm]}] (k.east|-pi.west) -- (pi.west) node[midway] {$/$} node[midway, below=0.2cm] {\small $128$};
+\draw[-{Latex[length=2mm]}] (n.east|-helpsouth) -- (helpsouth-|pi.west) node[midway] {$/$} node[midway, below=0.2cm] {\small $128$};
+
+\node[XOR, right = of pi.east|-helpsouth] (xkinit) {};
+\node[AE_key, anchor = west, below = of xkinit, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south west);
+    }] (kinit) {$0^* || K$};
+
+\draw[-{Latex[length=2mm]}] (pi.east|-helpsouth) -- (xkinit) node[midway] {$/$} node[midway, below=0.2cm] {\small $256$}; 
+\draw[-{Latex[length=2mm]}] (kinit.north-|xkinit) -- (xkinit); 
+
+
+
+% 1er tour AD
+
+\node[XOR, right = of kinit.east|-helpnorth] (xa1) {};
+
+\node[AE_msg, above = of xa1] (a1) {$A_1$};
+
+\draw[-{Latex[length=2mm]}] (a1) -- (xa1) node[midway] {$/$} node[midway, left=0.2cm] {\small $64$};
+\draw[line] (pi.east|-xa1) -- (helpnorth-|xkinit) node[midway] {$/$} node[midway, below=0.2cm] {\small $64$};
+\draw[-{Latex[length=2mm]}] (pi.east|-xa1)  -- (xa1);
+
+
+% 2er tour AD
+
+
+\node[AE_P, minimum height = 3.75cm, right = of xa1|-pi] (pa1) {$p^{8}$};
+
+\draw[-{Latex[length=2mm]}] (xkinit) -- (pa1.west|-xkinit);
+\draw[-{Latex[length=2mm]}] (xa1) -- (pa1.west|-xa1);
+
+\node[right = of pa1.east|-helpnorth, inner sep = 10pt] (cdotnortha) {$\cdots$};
+\node[right = of pa1.east|-helpsouth, inner sep = 10pt] (cdotsoutha) {$\cdots$};
+
+\node[XOR, right = of cdotnortha] (xa2) {};
+\node[AE_msg, above = of xa2, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
+    }] (a2) {$A_{s}||10^*$};
+
+
+\draw[line] (pa1.east|-cdotnortha) -- (cdotnortha);
+\draw[line] (pa1.east|-cdotsoutha) -- (cdotsoutha);
+\draw[-{Latex[length=2mm]}] (cdotnortha) -- (xa2);
+\draw[-{Latex[length=2mm]}] (a2) -- (xa2) node[midway] {$/$} node[midway, left=0.2cm] {\small $64$};
+
+
+% fin AD
+
+\node[AE_P, minimum height = 3.75cm, right = of xa2|-pa1] (pa2) {$p^{8}$};
+
+\node[XOR, right = of pa2.east|-helpsouth] (xdom) {};
+\node[AE_key, fill = gray!20, below = of xdom] (dom) {$0^*1$};
+
+\draw[-{Latex[length=2mm]}] (xa2) -- (pa2.west|-xa2);
+\draw[-{Latex[length=2mm]}] (cdotsoutha) -- (pa2.west|-helpsouth);
+
+\draw[-{Latex[length=2mm]}] (pa2.east|-xdom) -- (xdom);
+\draw[-{Latex[length=2mm]}] (dom.north-|xdom) -- (xdom);
+
+
+
+% 1er tour chiffrement
+
+\node[XOR, right = of dom.east|-helpnorth] (x1) {};
+\node[AE_msg, above = of x1] (m1) {$M_1$};
+\node[AE_ctx, right = of m1] (c1) {$C_1$};
+
+\draw[-{Latex[length=2mm]}] (pa2.east|-x1) -- (x1);
+\draw[-{Latex[length=2mm]}] (m1) -- (x1) node[midway] {$/$} node[midway, left=0.2cm] {\small $64$};
+\draw[-{Latex[length=2mm]}] (x1) -| (c1)node[near end] {$/$} node[near end, left=0.2cm] {\small $64$};
+
+\node at (x1-|c1) {$\bullet$};
+
+% 2e tour chiffrement
+
+\node[AE_P, minimum height = 3.75cm, right = of c1|-pa2] (p1) {$p^{8}$};
+
+\draw[-{Latex[length=2mm]}] (x1) -- (x1-|p1.west);
+\draw[-{Latex[length=2mm]}] (xdom) -- (p1.west|-helpsouth);
+
+\node[right = of p1.east|-helpnorth, inner sep = 10pt] (cdotnorth) {$\cdots$};
+\node[right = of p1.east|-helpsouth, inner sep = 10pt] (cdotsouth) {$\cdots$};
+
+\node[XOR, right = of cdotnorth] (x2) {};
+\node[AE_msg, above = of x2] (m2) {$M_{t-1}$};
+\node[AE_ctx, right = of m2] (c2) {$C_{t-1}$};
+
+
+\draw[line] (p1.east|-cdotnorth) -- (cdotnorth);
+\draw[line] (p1.east|-cdotsouth) -- (cdotsouth);
+
+\draw[-{Latex[length=2mm]}] (cdotnorth) -- (x2);
+\draw[-{Latex[length=2mm]}] (m2) -- (x2) node[midway] {$/$} node[midway, left=0.2cm] {\small $64$};
+\draw[-{Latex[length=2mm]}] (x2) -| (c2) node[near end] {$/$} node[near end, left=0.2cm] {\small $64$};
+
+\node at (x2-|c2) {$\bullet$};
+
+
+% fin chiffrement
+
+\node[AE_P, minimum height = 3.75cm, right = of c2|-p1] (p2) {$p^{8}$};
+
+\draw[-{Latex[length=2mm]}] (x2) -- (x2-|p2.west);
+\draw[-{Latex[length=2mm]}] (cdotsouth) -- (p2.west|-cdotsouth);
+
+\node[XOR, right = of p2.east|-x1] (x3) {};
+\node[AE_msg, above = of x3, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
+    }] (m3) {$M_{t}||10^*$};
+\node[AE_ctx, right = of m3, text width = 0.75cm] (c3) {$C_{t}$};
+
+\draw[-{Latex[length=2mm]}] (p2.east|-x3) -- (x3);
+\draw[-{Latex[length=2mm]}] (m3) -- (x3) node[midway] {$/$} node[midway, left=0.2cm] {\small $64$};
+\draw[-{Latex[length=2mm]}] (x3) -| (c3) node[near end] {$/$} node[near end, left=0.2cm] {\small $|M_t|$};
+
+\node at (x3-|c3) {$\bullet$};
+
+
+% finalisation
+
+\node[XOR, right = of c3.east|-helpsouth] (xkf) {};
+
+\node[AE_P, minimum height = 3.75cm, right = of xkf.east|-p2] (pf) {$p^{12}$};
+
+\node[AE_key, below = of xkf, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
+    }] (kf) {$K||0^*$};
+
+\draw[-{Latex[length=2mm]}] (x3) -- (x3-|pf.west);
+\draw[-{Latex[length=2mm]}] (p2.east|-xkf) -- (xkf);
+\draw[-{Latex[length=2mm]}] (xkf|-kf.north) -- (xkf);
+\draw[-{Latex[length=2mm]}] (xkf) -- (xkf-|pf.west);
+
+\node[XOR, right = of pf.east|-xkf] (xt) {};
+\node[AE_key, below = of xt] (kt) {$K$};
+\node[AE_tag] at (c3-|xt) (t) {$T$};
+
+\draw[-{Latex[length=2mm]}] (pf.east|-xt) -- (xt) node[midway] {$/$} node[midway, below=0.2cm] {\small $128$};
+\draw[-{Latex[length=2mm]}] (kt) -- (xt);
+\draw[-{Latex[length=2mm]}] (xt) -- (t);
+
+
+% separations
+
+\coordinate (sepinit) at ($(kinit.east)!1/2!(a1.west)$);
+\draw[line, dashed] (kinit.south-|sepinit) -- (a1.north-|sepinit);
+
+\coordinate (sepa) at ($(dom.east)!1/2!(m1.west)$);
+\draw[line, dashed] (dom.south-|sepa) -- (m1.north-|sepa);
+
+\coordinate (sepf) at ($(c3.east)!1/2!(kf.west)$);
+\draw[line, dashed] (kf.south-|sepf) -- (c3.north-|sepf);
+
+\end{tikzpicture}
+}

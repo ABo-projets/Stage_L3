@@ -85,11 +85,11 @@
 		
 		\begin{columns}[T]
 			\column{0.32\textwidth}
-			\textbf{Campagne:}\\
+			\textbf{Campaign:}\\
 			Choose:
 			\begin{itemize}
 				\item target $k$
-				\item attack path $\mathcal{R}(k,0_S)=O_R$
+				\item attack path $\mathcal{R}(k,O_S)=O_R$
 			\end{itemize}
 			Compute the algorithm multiple times to gain \textbf{traces}
 			
@@ -110,7 +110,7 @@
 		
 		\begin{columns}[T]
 			\column{0.32\textwidth}
-			\textbf{Campagne:}\\
+			\textbf{Campaign:}\\
 			\begin{itemize}
 				\item $k = $ one byte of the secret key $K_0$
 				\item $O_R = $ power consumption during the S-box
@@ -162,7 +162,7 @@
 			\column{0.32\textwidth}
 			$$p_C$$
 			$\newline$
-			{\tiny 
+				{\tiny 
 				\begin{tabularx}{0.1\textwidth}{|*{8}{p{0.01cm}|}X}
 					\cline{1-8}
 					&&&&&&&&$S_0$\\
@@ -175,8 +175,8 @@
 					\cline{1-8}
 					&&&&&&&&$S_4$\\
 					\cline{1-8}
-			\end{tabularx}}
-			%				\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words{}}
+				\end{tabularx}}
+%				\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words{}}
 			
 			\column{0.32\textwidth}
 			$$p_S$$
@@ -211,7 +211,7 @@
 			\item Finalization: computes the tag thanks to the key and the state
 		\end{itemize}	
 	\end{frame}
-	
+
 	
 	\section{Methodology}
 	\subsection{Capture}
@@ -241,8 +241,7 @@
 				\column{0.55\textwidth}
 				\item Finding the best theoretical attack path (HW vs value, vertical vs horizontal)
 				\item Comparing distinguishers (Pearson correlation vs mutual information)
-				\item Attack 1: finding the vertical output and deduct the key
-				\item Attack 2: finding the HW of the output
+				\item Attack: finding the vertical output and deduct the key
 				\column{0.4\textwidth}
 				\begin{figure}[h]
 					\centering
@@ -281,7 +280,7 @@
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.3]{h_and_v_one_byte}
-			\caption{Mutual information for the horizontal value in orange and the vertical value in blue}
+			\caption{Mutual information for the horizontal and the vertical value}
 			\label{hvval}
 		\end{figure}
 	\end{frame}
@@ -291,7 +290,7 @@
 		\begin{figure}
 			\centering
 			\includegraphics[scale=0.3]{vertical_one_bit}
-			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ in orange and its value in blue}
+			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ and its value}
 			\label{vHW}
 		\end{figure}
 	\end{frame}
@@ -301,13 +300,13 @@
 		\begin{figure}
 			\centering
 			\includegraphics[scale=0.3]{corr_vs_MI_hHW}
-			\caption{Mutual information (in orange) and absolute Pearson correlation (in blue) for a horizontal attack on the reference implementation}
+			\caption{Mutual information and absolute Pearson correlation for a horizontal attack on the reference implementation}
 			\label{corvsMI}
 		\end{figure}
 	\end{frame}
 	
 	\begin{frame}
-		\frametitle{Results attack 1}
+		\frametitle{Results attack}
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.3]{nonces_alea}
@@ -325,5 +324,5 @@
 			\item Leads to follow: belief propagation
 		\end{itemize}
 	\end{frame}
-	
+
 \end{document}

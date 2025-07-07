@@ -1,0 +1,29 @@
+\resizebox{100pt}{75pt}{
+	
+\begin{tikzpicture}[node distance = 1cm and 0.75cm]
+% finalisation
+
+\node[XOR, right = of c3.east|-helpsouth] (xkf) {};
+
+\node[AE_P, minimum height = 3.75cm, right = of xkf.east|-p2] (pf) {$p^{12}$};
+
+\node[AE_key, below = of xkf, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
+    }] (kf) {$K||0^*$};
+
+\draw[-{Latex[length=2mm]}] (x3) -- (x3-|pf.west);
+\draw[-{Latex[length=2mm]}] (x4) -- (x4-|pf.west);
+\draw[-{Latex[length=2mm]}] (p2.east|-xkf) -- (xkf);
+\draw[-{Latex[length=2mm]}] (xkf|-kf.north) -- (xkf);
+\draw[-{Latex[length=2mm]}] (xkf) -- (xkf-|pf.west);
+
+\node[XOR, right = of pf.east|-xkf] (xt) {};
+\node[AE_key, below = of xt] (kt) {$K$};
+\node[AE_tag] at (c3-|xt) (t) {$T'$};
+
+\draw[-{Latex[length=2mm]}] (pf.east|-xt) -- (xt) node[midway] {$/$} node[midway, below=0.2cm] {\small $128$};
+\draw[-{Latex[length=2mm]}] (kt) -- (xt);
+\draw[-{Latex[length=2mm]}] (xt) -- (t);
+
+\end{tikzpicture}
+}

@@ -1,0 +1,58 @@
+\resizebox{150pt}{75pt}{
+	
+\begin{tikzpicture}[node distance = 1cm and 0.75cm]
+
+
+% 1er tour AD
+
+\node[XOR, right = of kinit.east|-helpnorth] (xa1) {};
+
+\node[AE_msg, above = of xa1] (a1) {$A_1$};
+
+\draw[-{Latex[length=2mm]}] (a1) -- (xa1) node[midway] {$/$} node[midway, left=0.2cm] {\small $128$};
+\draw[line] (pi.east|-xa1) -- (helpnorth-|xkinit) node[midway] {$/$} node[midway, below=0.2cm] {\small $128$};
+\draw[-{Latex[length=2mm]}] (pi.east|-xa1)  -- (xa1);
+
+
+% 2er tour AD
+
+
+\node[AE_P, minimum height = 3.75cm, right = of xa1|-pi] (pa1) {$p^{8}$};
+
+\draw[-{Latex[length=2mm]}] (xkinit) -- (pa1.west|-xkinit);
+\draw[-{Latex[length=2mm]}] (xa1) -- (pa1.west|-xa1);
+
+\node[right = of pa1.east|-helpnorth, inner sep = 10pt] (cdotnortha) {$\cdots$};
+\node[right = of pa1.east|-helpsouth, inner sep = 10pt] (cdotsoutha) {$\cdots$};
+
+\node[XOR, right = of cdotnortha] (xa2) {};
+\node[AE_msg, above = of xa2, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
+    }] (a2) {$A_{s}||10^*$};
+
+
+\draw[line] (pa1.east|-cdotnortha) -- (cdotnortha);
+\draw[line] (pa1.east|-cdotsoutha) -- (cdotsoutha);
+\draw[-{Latex[length=2mm]}] (cdotnortha) -- (xa2);
+\draw[-{Latex[length=2mm]}] (a2) -- (xa2) node[midway] {$/$} node[midway, left=0.2cm] {\small $128$};
+
+
+% fin AD
+
+\node[AE_P, minimum height = 3.75cm, right = of xa2|-pa1] (pa2) {$p^{8}$};
+
+\node[XOR, right = of pa2.east|-helpsouth] (xdom) {};
+\node[AE_key, fill = gray!20, below = of xdom] (dom) {$0^*1$};
+
+\draw[-{Latex[length=2mm]}] (xa2) -- (pa2.west|-xa2);
+\draw[-{Latex[length=2mm]}] (cdotsoutha) -- (pa2.west|-helpsouth);
+
+\draw[-{Latex[length=2mm]}] (pa2.east|-xdom) -- (xdom);
+\draw[-{Latex[length=2mm]}] (dom.north-|xdom) -- (xdom);
+
+
+% separations
+
+
+\end{tikzpicture}
+}

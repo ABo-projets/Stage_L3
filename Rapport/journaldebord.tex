@@ -1,6 +1,7 @@
 \documentclass[12pt]{article}
 
 \usepackage{enumitem,amssymb}
+\usepackage{amsmath}
 \usepackage{listings}
 \lstset{
 	language=bash,
@@ -9,6 +10,7 @@
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{fourier}
+\usepackage{tabularx}
 \usepackage{float}
 \geometry{hmargin=2.5cm,vmargin=2.5cm}
 \newlist{todolist}{itemize}{2}
@@ -19,6 +21,38 @@
 \newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
 	\hspace{-2.5pt}}
 \newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+
+
+
+	\usepackage{xcolor}
+\usepackage{listings}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CStyle}{
+	backgroundcolor=\color{backgroundColour},   
+	commentstyle=\color{mGreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{mGray},
+	stringstyle=\color{mPurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2,
+	language=C
+}
+
+
 
 \author{Alexane Boldo}
 
@@ -54,9 +88,9 @@
 		\item[\done] Rédaction du rapport
 		\item[\done] Préparation de la présentation
 		\item Corriger rapport et présentation selon les recommendations
-		\item Trouver des idées de raison pour laquelle la clé fuite mal
+		\item[\done] Trouver des idées de raison pour laquelle la clé fuite mal
 		\item Implémenter Ascon protégé
-		\item Essayer d'attaquer de même Ascon protégé
+		\item[\wontfix] Essayer d'attaquer de même Ascon protégé
 	\end{todolist}
 	\section{Séance 1 : 19/05/2025}
 	\subsection{Notes de séance}
@@ -194,11 +228,11 @@
 	
 	\noindent \textbf{Réponse à une question :} Que veut dire ADC exactement ? ($\rightarrow$ Analog to Digital Converter) \\ Quand l'échantillon est trop bas, "no trigger seen" $\rightarrow$ nécessité de voir \verb|trigger_low| dans la capture, pas refaisable, des fois ça marche, des fois ça ne marche pas :
 	\begin{lstlisting}
-		WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
-		no trigger seen! Trigger forced, data is invalid. Status: 0b
-		WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
-		no trigger seen! Trigger forced, data is invalid. Status: 08
-		WARNING:ChipWhisperer Scope:Timeout happened during capture
+WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
+no trigger seen! Trigger forced, data is invalid. Status: 0b
+WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
+no trigger seen! Trigger forced, data is invalid. Status: 08
+WARNING:ChipWhisperer Scope:Timeout happened during capture
 	\end{lstlisting}
 	$\rightarrow$ problème de reset de la target probable, pas de réel problème lorsque tout est bien configuré, on peut aller très bas.
 	
@@ -256,7 +290,7 @@
 	\section{Séance 5 : 23/05/2025}
 	\subsection{Notes de séance}
 	\noindent \textbf{Réponses aux questions :}
-	\begin{itemize}
+		\begin{itemize}
 		\item Mon temps de calcul est très important : est-ce normal à ce point ? $\rightarrow$ surtout corrélation de Pearson qui est un gros calcul. Ce serait plus rapide avec \verb|Julia|
 		\item Vérification de la clé : comment faire ? $\rightarrow$ juste lancement d'un programme qui teste sur plein de textes un chiffrement avec la clé de base et la clé trouvée, vérification de clé de dernier tour dans le fibs
 		\item \textbf{2.36} : regarder quel est le nombre de traces minimum requis pour que l'attaque retrouve toujours la clé
@@ -460,7 +494,7 @@
 	Problème de capture de la trace, erreur probable sur le renvoi du chiffré, qu fait bugger les chargement et le calcul des traces : 
 	
 	\begin{lstlisting}
-		WARNING:ChipWhisperer Target:Unexpected end to command: 9
+WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\end{lstlisting}
 	
 	\noindent Probablement à cause de la capture de la cible, il n'arrive pas à trouver le chiffré ce qui cause entre autre ce Warning (et le fait que les chiffrés soient à \verb|None|).\\
@@ -516,7 +550,7 @@
 		De même, on récupère les octets de clé qui donnent la corrélation en absolu la plus élevée sur chaque colonne.
 		\item \textbf{Attaque de M. SARRY :} On sait déterminer la clé à partir de la sortie de la S-Box de premier tour de l'initialisation. Ainsi, une attaque établie avec succès retrouve les bits en sortie de la S-Box en fonction de la trace.
 	\end{itemize}
-	
+
 	\subsection{Résumé de séance}
 	\begin{itemize}
 		\item Tests pour trouver le bug de capture, capture de 3000 traces
@@ -631,7 +665,7 @@
 	\section{Séance 16 : 12/06/2025}
 	\subsection{Notes de séance}
 	\textbf{Réponse aux questions :}
-	\begin{itemize}
+		\begin{itemize}
 		\item Montrer les courbes : il y a un problème, la bonne clé ne semble pas être mise en avant. Est-ce que puisqu'on trouve la meilleure hypothèse de clé pour chaque clé 3 fois, il est raisonnable d'essayer de comparer ces trois calculs ? $\rightarrow$ utiliser éventuellement un algorithme de backtracking pour les hypothèses sur lesquelles on est pas sûr.e, corriger, regarder où sont les différences
 		\item Que représentent les graphes de Sarry exactement ? L'information mutuelle entre quoi et quoi ? Entre le paramètre (horizontal/vertical, valeur, poids de Hamming) et une hypothèse de clé ? Une hypothèse d'octet de sortie ? Pour quelle hypothèse ? Est-ce un graphe ne traitant qu'une seule hypothèse d'octet ? $\rightarrow$ Les graphes représenteraient l'information mutuelle en fonction du temps entre la consommation de courant et l'hypothèse prise en entrée, afin de trouver l'hypothèse sur laquelle faire l'attaque (l'attaque n'a pas du tout été faite)
 		\item Comment calcule-t-il l'information mutuelle ? Comment connaît-il la probabilité d'une valeur s'il ne répète l'expérience qu'une seule fois ? $\rightarrow$ même si on est à clé variable, il ne fait que regarder le lien entre la sortie (l'octet écrit) et la consommation
@@ -703,14 +737,14 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{horizontal_one_byte}
+		\includegraphics[width=0.8\textwidth]{img_files/horizontal_one_byte}
 		\caption{Graphe représentant l'information mutuelle entre la consommation de courant et le poids de Hamming du premier octet de $S_4$ en fonction du temps en bleu et la valeur en orange, pour un nonce fixé}
 		\label{hHW&val}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{hHW_one_byte}
+		\includegraphics[width=0.8\textwidth]{img_files/hHW_one_byte}
 		\caption{Graphe représentant l'information mutuelle entre la consommation de courant et le poids de Hamming du premier octet de $S_4$ en fonction du temps pour des nonces aléatoires}
 		\label{hHW1}
 	\end{figure}
@@ -719,14 +753,14 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.65\textwidth]{hHW_each_byte}
+		\includegraphics[width=0.65\textwidth]{img_files/hHW_each_byte}
 		\caption{Graphe de l'information mutuelle entre la consommation de courant et le poids de Hamming de chacun des 8 octets de $S_4$ en fonction du temps}
 		\label{hHW8}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width = 0.65\textwidth]{hHW_8_bytes_zoom}
+		\includegraphics[width = 0.65\textwidth]{img_files/hHW_8_bytes_zoom}
 		\caption{Comme le graphe précédent mais pour un nonce fixé et zoomé pour mieux voir}
 		\label{hHW8_zoom}
 	\end{figure}
@@ -735,14 +769,14 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{vertical_one_bit}
+		\includegraphics[width=0.8\textwidth]{img_files/vertical_one_bit}
 		\caption{Graphe de l'information mutuelle entre la consommation de courant et le poids de Hamming de la concaténation du premier bit de chacun des 5 mots de $S$ en orange et leur valeur en bleu pour un nonce fixé}
 		\label{vHW}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{vertical_one_byte}
+		\includegraphics[width=0.8\textwidth]{img_files/vertical_one_byte}
 		\caption{Graphe de l'information mutuelle entre la consommation de courant et le poids de Hamming de la concaténation du premier bit de chacun des 5 mots de $S$ en bleu et leur valeur en orange pour des nonces variables}
 		\label{vHW&val}
 	\end{figure}
@@ -751,7 +785,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{h_and_v_one_byte}
+		\includegraphics[width=0.8\textwidth]{img_files/h_and_v_one_byte}
 		\caption{Graphe de l'information mutuelle entre la consommation et la valeur horizontale en orange et la valeur verticale en bleu}
 		\label{hvval}
 	\end{figure}
@@ -760,7 +794,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{vertical_corr}
+		\includegraphics[width=0.8\textwidth]{img_files/vertical_corr}
 		\caption{Graphe de la corrélation de Pearson entre la consommation et le poids de Hamming vertical en bleu et la valeur verticale en orange}
 		\label{vcor}
 	\end{figure}
@@ -769,7 +803,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{horizontal_one_bit_corr}
+		\includegraphics[width=0.8\textwidth]{img_files/horizontal_one_bit_corr}
 		\caption{Graphe de la corrélation de Pearson entre la consommation et le poids de Hamming horizontal en bleu et la valeur en orange}
 		\label{hcor}
 	\end{figure}
@@ -778,7 +812,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{comp_ref_hHW}
+		\includegraphics[width=0.8\textwidth]{img_files/comp_ref_hHW}
 		\caption{Graphe de l'information mutuelle entre la consommation et le poids de Hamming horizontal en bleu sur l'implémentation de référence et en orange sur notre implémentation}
 		\label{compref}
 	\end{figure}
@@ -787,7 +821,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{corr_vs_MI_hHW}
+		\includegraphics[width=0.8\textwidth]{img_files/corr_vs_MI_hHW}
 		\caption{Graphe comparant l'information mutuelle (en orange) et la corrélation de Pearson (en bleu) pour un attaque horizontale sur l'implémentation de référence}
 		\label{corvsMI}
 	\end{figure}
@@ -842,7 +876,7 @@
 	\section{Séance 22 : 20/06/2025}
 	\subsection{Notes de séance}
 	\textbf{Réponse aux questions :}
-	\begin{itemize}
+		\begin{itemize}
 		\item Vérifier l'analyse des graphes de la séance \ref{s19} afin de pouvoir rédiger les interprétations et conclusions du leak dans le rapport
 		\item Dans l'implémentation de référence, à quoi sert le paramètre nsec ? Il est juste utilisé pour \verb|(void) nsec);| au début du chiffrement et du déchiffrement. $\rightarrow$ à rien certainement juste utilisé pour ressembler à la norme
 		\item Dans l'implémentation de référence, on inclut un fichier qui n'existe pas (agaçant, mais facile à réécrire) et on déchiffre peu importe l'intégrité, c'est un peu problématique, non ? $\rightarrow$ pas grave
@@ -979,7 +1013,7 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.8]{HWvrai_vs_HWalea}
+		\includegraphics[scale=0.8]{img_files/HWvrai_vs_HWalea}
 		\caption{Information mutuelle entre la consommation et les vrais poids de Hamming en bleu et entre la consommation et des valeurs aléatoires en orange}
 	\end{figure}
 	
@@ -998,7 +1032,7 @@
 		\item[\done] Réessayer l'expérience des HW, sauf que cette fois on ne choisit pas d'antécédent particulier, juste on regarde ce qui pique le mieux entre des HW aléatoiers et les vrais
 		\item[\done] Relire à tête reposée l'attaque DPA, une dernière fois
 		\item[\done] Refaire les graphes avec un légende (si possible plus clairs)
-		\item Répondre au mail pour la présentation
+		\item[\done] Répondre au mail pour la présentation
 	\end{todolist}
 	
 	
@@ -1019,17 +1053,219 @@
 	\subsection{Objectifs de la séance prochaine}
 	\begin{todolist}
 		\item[\done] Refaire les graphes
-		\item Répondre au mail
+		\item[\done] Répondre au mail
 		\item Corriger la présentation
-		\item Réfléchir à pourquoi la fausse clé donne une bonne corrélation : la s-box devrait disperser
+		\item[\done] Réfléchir à pourquoi la fausse clé donne une bonne corrélation : la s-box devrait disperser
 	\end{todolist}
 	
 	
-	\section{Questions pour l'entretien hebdomadaire}
+	\section{Séance 31 : 3/07/2025}
+	\subsection{Notes de séance}
+	Il y a une forte corrélation entre les clés fausses et juste car lorsqu'on prend une hypothèse de clé fixe, les sortie ne sont pas réellement aléatoire. Cependant, surbeaucoup de traces, on devrait quand-même pouvoir distinguer la bonne clé.
+	
+	\noindent Ce n'est pas très concluant: même de fausses hypothèses pointent des fois, c'est un peu le hasard...
+	
+	\noindent \c{C}a ne marchera probablement pas 
+	
+	\subsection{Résumé de séance}
 	\begin{itemize}
-		\item Comment ça se fait que pour des faux HW, on est une IM négligeable, mais que pour des fausses clés, supposées donc donner des HW aléatoires par hypothèse crypto, on ait une corrélation ?
+		\item Graphe avec titre et couleur pour échelle de gris
+		\item Calcul pour une fausse clé sur beaucoup de traces pour voir si on peut distinguer une fausse clé d'une vraie clé
+		\item Calcul d'images
+		\item Entraînement à la présentation
 	\end{itemize}
 	
+	\subsection{Objectifs de la séance prochaine}
+	\begin{todolist}
+		\item[\done] Rendez-vous hebdomadaire : parler que l'attaque ne marchera certainement pas, même si les HW fuit, chaque clé donne des hypothèses trop proches
+	\end{todolist}
 	
 	
+	\section{Séance 32 : 4/07/2025}
+	\subsection{Notes de séance}
+	\textbf{Remarques sur la présentation :} 
+	\begin{todolist}
+		\item Ajouter encadrant, équipe, date
+		\item Slides doivent être redondantes
+		\item Ne pas présenter les autres étapes de la permutation
+		\item Revoir l'ordre : Intro avant le plan -> très général, pas balancer Ascon d'un coup, puis Ascon -> la permutation linéaire juste les évoquer, expliquer le state et l'initialisation, puis tableau équations puis CW (sans parler de triggers) puis évoquer CPA plus simplement et sans exemple
+		\item Revendre une meilleure conclusion, peut-être rajouter une slide d'explication de pourquoi ça ne marche pas
+		\item Rajouter les citations des figures
+	\end{todolist}
+	
+	\noindent \textbf{Remarques sur le rapport :} 
+	\begin{todolist}
+		\item[\done] Enlever "nous"
+		\item[\done] Enlever futurs
+		\item[\done] Réécrire l'introduction selon un modèle (motivations, apports, plan, ...)
+		\item[\done] Ajouter de meilleures figures
+		\item[\done] Ajouter les citations des figures
+		\item[\done] Ajouter l'équipe
+		\item[\done] Enlever le tableau
+		\item[\done] Ajouter le code en annexe
+		\item[\done] Expliquer plus en détail Ascon
+		\item[\done] Revoir les annexes (ne pas mettre les équations en annexe, surtout pour les étapes de permutation, mettre un tableau d'abréviation, peut-être y mettre des graphes moins utiles à nonces variables par exemple)
+		\item[\done] S'assurer que les figures soient au bon endroit(avec [h!])
+		\item[\done] Ajouter le citation CPA
+		\item[\done] Vérification de format
+		\item Relecture complète (ajout dans les résultats du fait que les HW aléatoires marchent avec un graphe en annexe)
+		\item[\done] Vérification orthographe/grammaire
+	\end{todolist}
+	
+	\noindent \textbf{Réponse à la question :}
+	\begin{itemize}
+		\item Comment ça se fait que pour des faux HW, on ait une IM négligeable, mais que pour des fausses clés, supposées donc donner des HW aléatoires par hypothèse crypto, on ait une corrélation ? $\rightarrow$ voir le carnet, pas assez de variations quand on a une clé fixée...
+	\end{itemize}
+	
+	\noindent \textbf{Réunion Ascon :} Repousser la cyclicité dans Exact Soft Analytical SCA using Tractable Circuits, faire du BP en gros, c'est compliqué mais bon résultat
+	
+	\subsection{Résumé de séance}
+	\begin{itemize}
+		\item Rendez-vous hebdomadaire
+		\item Correction du rapport
+		\item Réunion Ascon
+	\end{itemize}
+	
+	\subsection{Objectifs de la séance prochaine}
+	\begin{todolist}
+		\item Regarder comment protéger Ascon
+		\item Corriger rapport
+		\item Corriger présentation
+	\end{todolist}
+	
+	
+	\section{Séance 33 : 7/07/2025}
+	\subsection{Notes de séance}
+	\textbf{Parties supprimées du rapport :}
+	
+	If the permutation is applied $a$ times, the constant for the round $i$ is \verb|const|$_{16-a+i}$ in table \ref{consts}.\\
+	If it is applied $b$ times, then \verb|const|$_{16-b+i}$ 
+	
+	\begin{figure}[h]
+		\centering
+		\footnotesize
+		\begin{tabularx}{0.5\textwidth}{cc||cc}
+			\hline
+			$i$&\verb|const|$_i$&$i$&\verb|const|$_i$\\
+			\hline
+			0&\verb|0x000000000000003c|&8&\verb|0x00000000000000b4|\\
+			1&\verb|0x000000000000002d|&9&\verb|0x00000000000000a5|\\
+			2&\verb|0x000000000000001e|&10&\verb|0x0000000000000096|\\
+			3&\verb|0x000000000000000f|&11&\verb|0x0000000000000087|\\
+			4&\verb|0x00000000000000f0|&12&\verb|0x0000000000000078|\\
+			5&\verb|0x00000000000000e1|&13&\verb|0x0000000000000069|\\
+			6&\verb|0x00000000000000d2|&14&\verb|0x000000000000005a|\\
+			7&\verb|0x00000000000000c1|&15&\verb|0x000000000000004b|\\
+			\hline
+		\end{tabularx}
+		\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words{}}
+		\label{consts}
+	\end{figure} 	
+	
+	
+	with the S-box the lookup table \ref{lookup_sbox}.
+	
+	\begin{figure}[h]
+		\small
+		\centering
+		\begin{tabular}{|c||*{8}{c|}}
+			\hline
+			$x$&0&1&2&3&4&5&6&7\\
+			\hline
+			$S-box(x)$&4&b&1f&14&1a&15&9&2\\
+			\hline\hline
+			$x$&8&9&a&b&c&d&e&f\\
+			\hline
+			$S-box(x)$&1b&5&8&12&1d&3&6&1c\\
+			\hline\hline
+			$x$&10&11&12&13&14&15&16&17\\
+			\hline
+			$S-box(x)$&1e&13&7&e&0&d&11&18\\
+			\hline\hline
+			$x$&18&19&1a&1b&1c&1d&1e&1f\\
+			\hline
+			$S-box(x)$&10&c&1&19&16&a&f&17\\
+			\hline
+		\end{tabular}
+		\caption{Lookup table for the 5-bit S-box}
+		\label{lookup_sbox}
+	\end{figure}
+	
+	It can also be computed using the circuit \ref{circuit_sbox}, which gives the equations \ref{equations_sbox}.
+	
+	
+	
+	\begin{figure}[H]
+		\centering
+		\begin{lstlisting}[style=CStyle]
+			state[0] ^= state[4];
+			state[4] ^= state[3];
+			state[2] ^= state[1];
+			uint64_t t0 = ~state[0];
+			uint64_t t1 = ~state[1];
+			uint64_t t2 = ~state[2];
+			uint64_t t3 = ~state[3];
+			uint64_t t4 = ~state[4];
+			t0 &= state[1];
+			t1 &= state[2];
+			t2 &= state[3];
+			t3 &= state[4];
+			t4 &= state[0];
+			state[0] ^= t1
+			; state[1] ^= t2;
+			state[2] ^= t3;
+			state[3] ^= t4;
+			state[4] ^= t0;
+			state[1] ^= state[0];
+			state[0] ^= state[4];
+			state[3] ^= state[2];
+			state[2] =~ state[2];
+		\end{lstlisting}
+		\caption{Equations to compute the S-box}
+		\label{equations_sbox}
+	\end{figure}
+	
+	It provides diffusion throughout each word $S_i \leftarrow \Sigma_i(S_i)$:
+	
+	\begin{gather*}
+		\Sigma_0(S_0) = S_0 \oplus (S_0 >>> 19) \oplus (S_0 >>> 28)\\
+		\Sigma_1(S_1) = S_1 \oplus (S_1 >>> 61) \oplus (S_1 >>> 39)\\
+		\Sigma_2(S_2) = S_2 \oplus (S_2 >>> \;  1) \oplus (S_2 >>> \; 6)\\
+		\Sigma_3(S_3) = S_3 \oplus (S_3 >>> 10) \oplus (S_3 >>> 17)\\
+		\Sigma_4(S_4) = S_4 \oplus (S_4 >>> \; 7) \oplus (S_4 >>> 41)\\
+	\end{gather*}
+	
+			
+	\begin{figure}[h]
+		\centering
+		\begin{tabularx}{0.4\textwidth}{|*{8}{>{\centering\arraybackslash}X|}>{\centering\arraybackslash}X}
+			\cline{1-8}
+			&&&&&&&&$S_0$\\
+			\cline{1-8}
+			&&&&&&&&$S_1$\\
+			\cline{1-8}
+			&&&&&&& \LARGE $\oplus$&$S_2$\\
+			\cline{1-8}
+			&&&&&&&&$S_3$\\
+			\cline{1-8}
+			&&&&&&&&$S_4$\\
+			\cline{1-8}
+		\end{tabularx}
+		\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words{}}
+		\label{const_lay}
+	\end{figure} 
+	
+	\subsection{Résumé de séance}
+	\begin{itemize}
+		\item Envoi du mail
+		\item Continuation de la correction du rapport
+	\end{itemize}
+	
+	\subsection{Objectifs de la prochaine séance}
+	
+	
+	\section{Questions pour l'entretien hebdomadaire}
+
+
+
 \end{document}

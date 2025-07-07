@@ -1,0 +1,32 @@
+\resizebox{80pt}{80pt}{
+	
+\begin{tikzpicture}[node distance = 1cm and 0.75cm]
+
+% init
+\node[AE_P, minimum height = 3.75cm] (pi) {$p^{12}$};
+
+\node[AE_vert, fill = gray!20, left = of pi.north west, anchor = north east, minimum height = 0.75cm] (iv) {$IV$}; 
+
+\node[AE_vert, fill = red!20, anchor = north] (k)  at (iv.south) {$K$}; 
+\node[AE_vert, fill = blue!20, left = of pi.south west, anchor = south east] (n) {$N$}; 
+
+\coordinate (helpsouth) at ($(pi.south east)!1/6!(pi.north east)$);
+\coordinate (helpnorth) at ($(pi.south east)!5/6!(pi.north east)$);
+
+\draw[-{Latex[length=2mm]}] (iv.east|-helpnorth) -> (helpnorth-|pi.west) node[midway] {$/$} node[midway, below=0.2cm] {\small $64$};
+\draw[-{Latex[length=2mm]}] (k.east|-pi.west) -- (pi.west) node[midway] {$/$} node[midway, below=0.2cm] {\small $128$};
+\draw[-{Latex[length=2mm]}] (n.east|-helpsouth) -- (helpsouth-|pi.west) node[midway] {$/$} node[midway, below=0.2cm] {\small $128$};
+
+\node[XOR, right = of pi.east|-helpsouth] (xkinit) {};
+\node[AE_key, anchor = west, below = of xkinit, path picture={
+      \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south west);
+    }] (kinit) {$0^* || K$};
+
+\draw[-{Latex[length=2mm]}] (pi.east|-helpsouth) -- (xkinit) node[midway] {$/$} node[midway, below=0.2cm] {\small $256$}; 
+\draw[-{Latex[length=2mm]}] (kinit.north-|xkinit) -- (xkinit); 
+
+% separations
+
+
+\end{tikzpicture}
+}

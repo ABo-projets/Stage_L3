@@ -24,7 +24,7 @@
 
 
 
-	\usepackage{xcolor}
+\usepackage{xcolor}
 \usepackage{listings}
 
 \definecolor{mGreen}{rgb}{0,0.6,0}
@@ -228,11 +228,11 @@
 	
 	\noindent \textbf{Réponse à une question :} Que veut dire ADC exactement ? ($\rightarrow$ Analog to Digital Converter) \\ Quand l'échantillon est trop bas, "no trigger seen" $\rightarrow$ nécessité de voir \verb|trigger_low| dans la capture, pas refaisable, des fois ça marche, des fois ça ne marche pas :
 	\begin{lstlisting}
-WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
-no trigger seen! Trigger forced, data is invalid. Status: 0b
-WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
-no trigger seen! Trigger forced, data is invalid. Status: 08
-WARNING:ChipWhisperer Scope:Timeout happened during capture
+		WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
+		no trigger seen! Trigger forced, data is invalid. Status: 0b
+		WARNING:ChipWhisperer Scope:Timeout in OpenADC capture(),
+		no trigger seen! Trigger forced, data is invalid. Status: 08
+		WARNING:ChipWhisperer Scope:Timeout happened during capture
 	\end{lstlisting}
 	$\rightarrow$ problème de reset de la target probable, pas de réel problème lorsque tout est bien configuré, on peut aller très bas.
 	
@@ -290,7 +290,7 @@ WARNING:ChipWhisperer Scope:Timeout happened during capture
 	\section{Séance 5 : 23/05/2025}
 	\subsection{Notes de séance}
 	\noindent \textbf{Réponses aux questions :}
-		\begin{itemize}
+	\begin{itemize}
 		\item Mon temps de calcul est très important : est-ce normal à ce point ? $\rightarrow$ surtout corrélation de Pearson qui est un gros calcul. Ce serait plus rapide avec \verb|Julia|
 		\item Vérification de la clé : comment faire ? $\rightarrow$ juste lancement d'un programme qui teste sur plein de textes un chiffrement avec la clé de base et la clé trouvée, vérification de clé de dernier tour dans le fibs
 		\item \textbf{2.36} : regarder quel est le nombre de traces minimum requis pour que l'attaque retrouve toujours la clé
@@ -494,7 +494,7 @@ WARNING:ChipWhisperer Scope:Timeout happened during capture
 	Problème de capture de la trace, erreur probable sur le renvoi du chiffré, qu fait bugger les chargement et le calcul des traces : 
 	
 	\begin{lstlisting}
-WARNING:ChipWhisperer Target:Unexpected end to command: 9
+		WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\end{lstlisting}
 	
 	\noindent Probablement à cause de la capture de la cible, il n'arrive pas à trouver le chiffré ce qui cause entre autre ce Warning (et le fait que les chiffrés soient à \verb|None|).\\
@@ -550,7 +550,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 		De même, on récupère les octets de clé qui donnent la corrélation en absolu la plus élevée sur chaque colonne.
 		\item \textbf{Attaque de M. SARRY :} On sait déterminer la clé à partir de la sortie de la S-Box de premier tour de l'initialisation. Ainsi, une attaque établie avec succès retrouve les bits en sortie de la S-Box en fonction de la trace.
 	\end{itemize}
-
+	
 	\subsection{Résumé de séance}
 	\begin{itemize}
 		\item Tests pour trouver le bug de capture, capture de 3000 traces
@@ -665,7 +665,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\section{Séance 16 : 12/06/2025}
 	\subsection{Notes de séance}
 	\textbf{Réponse aux questions :}
-		\begin{itemize}
+	\begin{itemize}
 		\item Montrer les courbes : il y a un problème, la bonne clé ne semble pas être mise en avant. Est-ce que puisqu'on trouve la meilleure hypothèse de clé pour chaque clé 3 fois, il est raisonnable d'essayer de comparer ces trois calculs ? $\rightarrow$ utiliser éventuellement un algorithme de backtracking pour les hypothèses sur lesquelles on est pas sûr.e, corriger, regarder où sont les différences
 		\item Que représentent les graphes de Sarry exactement ? L'information mutuelle entre quoi et quoi ? Entre le paramètre (horizontal/vertical, valeur, poids de Hamming) et une hypothèse de clé ? Une hypothèse d'octet de sortie ? Pour quelle hypothèse ? Est-ce un graphe ne traitant qu'une seule hypothèse d'octet ? $\rightarrow$ Les graphes représenteraient l'information mutuelle en fonction du temps entre la consommation de courant et l'hypothèse prise en entrée, afin de trouver l'hypothèse sur laquelle faire l'attaque (l'attaque n'a pas du tout été faite)
 		\item Comment calcule-t-il l'information mutuelle ? Comment connaît-il la probabilité d'une valeur s'il ne répète l'expérience qu'une seule fois ? $\rightarrow$ même si on est à clé variable, il ne fait que regarder le lien entre la sortie (l'octet écrit) et la consommation
@@ -876,7 +876,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\section{Séance 22 : 20/06/2025}
 	\subsection{Notes de séance}
 	\textbf{Réponse aux questions :}
-		\begin{itemize}
+	\begin{itemize}
 		\item Vérifier l'analyse des graphes de la séance \ref{s19} afin de pouvoir rédiger les interprétations et conclusions du leak dans le rapport
 		\item Dans l'implémentation de référence, à quoi sert le paramètre nsec ? Il est juste utilisé pour \verb|(void) nsec);| au début du chiffrement et du déchiffrement. $\rightarrow$ à rien certainement juste utilisé pour ressembler à la norme
 		\item Dans l'implémentation de référence, on inclut un fichier qui n'existe pas (agaçant, mais facile à réécrire) et on déchiffre peu importe l'intégrité, c'est un peu problématique, non ? $\rightarrow$ pas grave
@@ -1054,7 +1054,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\begin{todolist}
 		\item[\done] Refaire les graphes
 		\item[\done] Répondre au mail
-		\item Corriger la présentation
+		\item[\done] Corriger la présentation
 		\item[\done] Réfléchir à pourquoi la fausse clé donne une bonne corrélation : la s-box devrait disperser
 	\end{todolist}
 	
@@ -1085,12 +1085,14 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\subsection{Notes de séance}
 	\textbf{Remarques sur la présentation :} 
 	\begin{todolist}
-		\item Ajouter encadrant, équipe, date
-		\item Slides doivent être redondantes
-		\item Ne pas présenter les autres étapes de la permutation
-		\item Revoir l'ordre : Intro avant le plan -> très général, pas balancer Ascon d'un coup, puis Ascon -> la permutation linéaire juste les évoquer, expliquer le state et l'initialisation, puis tableau équations puis CW (sans parler de triggers) puis évoquer CPA plus simplement et sans exemple
-		\item Revendre une meilleure conclusion, peut-être rajouter une slide d'explication de pourquoi ça ne marche pas
-		\item Rajouter les citations des figures
+		\item[\done] Ajouter encadrant, équipe, date
+		\item[\done] Slides doivent être redondantes
+		\item[\done] Ne pas présenter les autres étapes de la permutation
+		\item[\done] Revoir l'ordre : Intro avant le plan -> très général, pas balancer Ascon d'un coup, puis Ascon -> la permutation linéaire juste les évoquer, expliquer le state et l'initialisation, puis tableau équations puis CW (sans parler de triggers) puis évoquer CPA plus simplement et sans exemple
+		\item[\done] Revendre une meilleure conclusion, peut-être rajouter une slide d'explication de pourquoi ça ne marche pas
+		\item[\done] Refaire les slides
+		\item[\done] Rajouter les citations des figures
+		\item[\done] Rajouter les annexes
 	\end{todolist}
 	
 	\noindent \textbf{Remarques sur le rapport :} 
@@ -1108,8 +1110,9 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 		\item[\done] S'assurer que les figures soient au bon endroit(avec [h!])
 		\item[\done] Ajouter le citation CPA
 		\item[\done] Vérification de format
-		\item Relecture complète (ajout dans les résultats du fait que les HW aléatoires marchent avec un graphe en annexe)
+		\item[\done] Relecture complète (ajout dans les résultats du fait que les HW aléatoires marchent avec un graphe en annexe)
 		\item[\done] Vérification orthographe/grammaire
+		\item Si temps supplémentaire : refaire légende du graphe normalisé, faire la s-Box en Tikz, refaire le Tikz du déchiffrement pour être cohérent sur le code couleur
 	\end{todolist}
 	
 	\noindent \textbf{Réponse à la question :}
@@ -1129,8 +1132,8 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\subsection{Objectifs de la séance prochaine}
 	\begin{todolist}
 		\item Regarder comment protéger Ascon
-		\item Corriger rapport
-		\item Corriger présentation
+		\item[\done] Corriger rapport
+		\item[\done] Corriger présentation
 	\end{todolist}
 	
 	
@@ -1235,7 +1238,7 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 		\Sigma_4(S_4) = S_4 \oplus (S_4 >>> \; 7) \oplus (S_4 >>> 41)\\
 	\end{gather*}
 	
-			
+	
 	\begin{figure}[h]
 		\centering
 		\begin{tabularx}{0.4\textwidth}{|*{8}{>{\centering\arraybackslash}X|}>{\centering\arraybackslash}X}
@@ -1262,10 +1265,99 @@ WARNING:ChipWhisperer Target:Unexpected end to command: 9
 	\end{itemize}
 	
 	\subsection{Objectifs de la prochaine séance}
+	\begin{todolist}
+		\item[\done] Finaliser correction du rapport
+		\item[\done] Correction de la présentation
+	\end{todolist}
+	
+	
+	\section{Séance 34 : 8/07/2025}
+	\subsection{Notes de séance}
+	Extraits de la présentation supprimés :
+	
+	%	\begin{frame}
+		%		\frametitle{Steps for a CPA attack}
+		%		
+		%		\begin{columns}[T]
+			%			\column{0.32\textwidth}
+			\textbf{Campaign:}\\
+			Choose:
+			\begin{itemize}
+				\item target $k$
+				\item attack path $\mathcal{R}(k,O_S)=O_R$
+			\end{itemize}
+			Compute the algorithm multiple times to gain \textbf{traces}
+			
+			%			\column{0.32\textwidth}
+			\textbf{Prediction:}\\
+			Find a model for $\mathcal{R}$, $\mathcal{R}_m(k,O_S) = P_{m,k}$
+			
+			%			\column{0.32\textwidth}
+			\textbf{Confrontation:}\\
+			Choose a distinguisher for each hypothesis $k$, confronting $O_R$ and $P_{m,k}$\\
+			Finds the best hypothesis $k_d$
+			%		\end{columns}
+		%	\end{frame}
+	
+	\subsubsection{Basic example on AES}
+	%\begin{frame}
+	%	\frametitle{Example on AES}
+	
+	%	\begin{columns}[T]
+		%		\column{0.32\textwidth}
+		\textbf{Campaign:}\\
+		\begin{itemize}
+			\item $k = $ one byte of the secret key $K_0$
+			\item $O_R = $ power consumption during the S-box
+			\item $O_S = p$ one byte of the plaintext $T$
+		\end{itemize}
+		
+		%		\column{0.32\textwidth}
+		\textbf{Prediction:}\\
+		$\mathcal{R}_m(k,p) = HW(S-box(p \oplus k))$
+		%			\begin{figure}
+			%				\includegraphics[width=0.5\textwidth]{attack_path_aes}
+			%				\caption{Attack path on AES}
+			%			\end{figure}
+		
+		%		\column{0.32\textwidth}
+		\textbf{Confrontation:}\\
+		Distinguisher: Pearson correlation
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{img_files/corr_aes}
+			\caption{Correlation for each key hypothesis with the power consumption}
+		\end{figure}
+		%	\end{columns}
+	%\end{frame}
+	
+	\begin{itemize}
+		\item Initialization: state creation and modification
+		$$S \leftarrow p^{a}( \underbrace{IV}_{S_0}||\underbrace{K}_{S_1,S_2}||\underbrace{n}_{S_3,S_4})$$
+		$$S \leftarrow S \oplus 0^{192} || K$$
+		\item Associated data process: updates the state using blocks of $r$-bits from $A=(A_1||..||A_s)$
+		\item Plaintext/Ciphertext process: each block of the plaintext or ciphertext is included in the state
+		\item Finalization: computes the tag thanks to the key and the state
+	\end{itemize}	
+	
+	\subsection{Résumé de séance}
+	\begin{itemize}
+		\item Finission des corrections du rapport
+		\item Calcul d'une image supplémentaire
+		\item Début de correction de la présentation
+	\end{itemize}
+	
+	\subsection{Objectifs de la séance prochaine}
+	\begin{todolist}
+		\item[\done] Finir présentation
+		\item Passer et se chronométrer
+		\item Regarder combien d'erreur le tag d'Ascon remarque
+		\item Envoyer présentation par mail pour jeudi
+		\item Enoyer tout à Hélène pour qu'elle puisse relire
+	\end{todolist}
 	
 	
 	\section{Questions pour l'entretien hebdomadaire}
-
-
-
+	
+	
+	
 \end{document}

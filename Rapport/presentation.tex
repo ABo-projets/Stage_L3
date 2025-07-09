@@ -16,6 +16,143 @@
 \usepackage{amsmath}
 \usepackage{float}
 
+
+
+
+
+\usepackage{rotating}	%% introduce sideways env
+\usepackage{tikz}
+\usepackage{amssymb}
+
+%% Public TikZ libraries
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+
+
+\usetikzlibrary{arrows}			%% Include regular arrows
+\usetikzlibrary{arrows.meta}	
+%\usepgflibrary{myarrows.new}		%% Include custom arrows
+%\usetikzlibrary{mycrypto.symbols}
+
+
+\tikzset{XOR/.style={draw,
+		circle,
+		append after command={
+			[shorten >=\pgflinewidth, shorten <=\pgflinewidth,]
+			(\tikzlastnode.north) edge[] (\tikzlastnode.south)
+			(\tikzlastnode.east) edge[] (\tikzlastnode.west)
+		},
+	},
+}
+
+\tikzset{edge/.style={
+		-latex new, 
+		arrow head=6pt, 
+		%						thick
+	},
+}
+
+\tikzset{line/.style={
+		%						thick,
+		draw, 
+		%						-latex',
+		shorten <=1bp,
+		shorten >=1bp,
+	}
+}
+
+\newcommand{\AEheight}{0.75cm}
+\newcommand{\AEwidth}{1.5cm}
+
+\tikzset{AE_P/.style={
+		rectangle,
+		thick,
+		draw,
+		fill=yellow!20,
+		inner sep = 0pt,
+		outer sep = 0pt,
+		text width=1cm, 
+		minimum height=4.5cm,
+		text centered,
+		%		anchor=north,
+	}	
+}
+
+\tikzset{AE_vert/.style={
+		rectangle,
+		thick,
+		draw,
+		fill=blue!20,
+		inner sep = 0pt,
+		outer sep = 0pt,
+		text width=\AEheight, 
+		minimum height=\AEwidth,
+		text centered,
+		%		anchor=north,
+	}
+}
+
+\tikzset{AE_msg/.style={
+		rectangle,
+		thick,
+		draw,
+		fill=blue!20,
+		inner sep = 0pt,
+		outer sep = 0pt,
+		text width=\AEwidth,
+		minimum height=\AEheight,
+		text centered,
+		%		anchor=north,
+	}
+}
+
+\tikzset{AE_ctx/.style={
+		rectangle,
+		thick,
+		draw,
+		fill=green!20,
+		inner sep = 0pt,
+		outer sep = 0pt,
+		text width=\AEwidth, 
+		minimum height=\AEheight,
+		text centered,
+		%		anchor=north,
+	}
+}
+
+\tikzset{AE_key/.style={
+		rectangle,
+		thick,
+		draw,
+		fill=red!20,
+		inner sep = 0pt,
+		outer sep = 0pt,
+		text width=\AEwidth, 
+		minimum height=\AEheight,
+		text centered,
+		%		anchor=north,
+	}
+}
+
+\tikzset{AE_tag/.style={
+		rectangle,
+		thick,
+		draw,
+		fill=green!20,
+		inner sep = 0pt,
+		outer sep = 0pt,
+		text width=\AEwidth, 
+		minimum height=\AEheight,
+		text centered,
+		%		anchor=north,
+	}
+}
+
+
+
+
+
 \usepackage{xcolor}
 \usepackage{listings}
 
@@ -30,7 +167,7 @@
 	keywordstyle=\color{magenta},
 	numberstyle=\tiny\color{mGray},
 	stringstyle=\color{mPurple},
-	basicstyle=\footnotesize,
+	basicstyle=\tiny,
 	breakatwhitespace=false,         
 	breaklines=true,                 
 	captionpos=b,                    
@@ -46,14 +183,28 @@
 
 \author{Alexane Boldo}
 
-\institute{IMT Atlantique}
+\institute{OCIF, IRISA}
 
 \title{Side-channel attacks on Ascon's S-box}
 
-\date{2025}
+\date{19/05/2025 to 11/07/2025}
+
+\setbeamertemplate{page number in head/foot}[appendixframenumber]
 
 \begin{document}
-	\frame{\titlepage}
+	\begin{frame}
+		\maketitle\small
+		{\centering\itshape Supervisor: Hélène Le Bouder\par}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Introduction}
+		\textbf{Side-Channel Attacks (SCA):} observation of computation time, power consumption, electromagnetic radiation, ... to discover a secret
+		
+		$\newline$
+		
+		\textbf{Goal:} Study the leaks from the winner for lightweight cryptography Ascon to theorize a SCA attack
+	\end{frame}
 	
 	\AtBeginSection[]
 	{
@@ -68,87 +219,53 @@
 		\tableofcontents
 	\end{frame}
 	
-	\begin{frame}
-		\frametitle{Introduction}
-		\textbf{Side-Channel Attacks (SCA):} observation of computation time, power consumption, electromagnetic radiation, ... to discover a secret
-		
-		$\newline$
-		
-		\textbf{Goal:} Study the leaks from the Ascon S-box to theorize the best CPA attack
-	\end{frame}
-	
-	
-	\section{Correlation Power Analysis (CPA)}
-	\subsection{Steps for the attack}
-	\begin{frame}
-		\frametitle{Steps for a CPA attack}
-		
-		\begin{columns}[T]
-			\column{0.32\textwidth}
-			\textbf{Campaign:}\\
-			Choose:
-			\begin{itemize}
-				\item target $k$
-				\item attack path $\mathcal{R}(k,O_S)=O_R$
-			\end{itemize}
-			Compute the algorithm multiple times to gain \textbf{traces}
-			
-			\column{0.32\textwidth}
-			\textbf{Prediction:}\\
-			Find a model for $\mathcal{R}$, $\mathcal{R}_m(k,O_S) = P_{m,k}$
-			
-			\column{0.32\textwidth}
-			\textbf{Confrontation:}\\
-			Choose a distinguisher for each hypothesis $k$, confronting $O_R$ and $P_{m,k}$\\
-			Finds the best hypothesis $k_d$
-		\end{columns}
-	\end{frame}
-	
-	\subsection{Basic example on AES}
-	\begin{frame}
-		\frametitle{Example on AES}
-		
-		\begin{columns}[T]
-			\column{0.32\textwidth}
-			\textbf{Campaign:}\\
-			\begin{itemize}
-				\item $k = $ one byte of the secret key $K_0$
-				\item $O_R = $ power consumption during the S-box
-				\item $O_S = p$ one byte of the plaintext $T$
-			\end{itemize}
-			
-			\column{0.32\textwidth}
-			\textbf{Prediction:}\\
-			$\mathcal{R}_m(k,p) = HW(S-box(p \oplus k))$
-			\begin{figure}
-				\includegraphics[width=0.5\textwidth]{attack_path_aes}
-				\caption{Attack path on AES}
-			\end{figure}
-			
-			\column{0.32\textwidth}
-			\textbf{Confrontation:}\\
-			Distinguisher: Pearson correlation
-			\begin{figure}
-				\includegraphics[width=\textwidth]{corr_aes}
-				\caption{Correlation for each key hypothesis with the power consumption}
-			\end{figure}
-		\end{columns}
-	\end{frame}
-	
-	
 	\section{Ascon-AEAD}
 	\subsection{Presentation}
 	\begin{frame}
 		\frametitle{What is Ascon?}
 		\textbf{Authenticated Encryption with Associated Data (AEAD)}: encrypt, check authentication of content and associated data
 		
-		$\newline$
+		\begin{figure}
+			\centering
+			\input{AEAD}
+			\caption{AEAD algorithm from \cite{cours_crypto}}
+		\end{figure}
 		
 		NIST winner for lightweight cryptography
 		
-		$\newline$
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Ascon's State}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|l}
+			byte 0&byte 1&byte 2&byte 3&byte 4&byte 5&byte 6&byte 7&\\
+			\cline{1-8}
+			\multicolumn{8}{|c|}{IV}&$S_0$\\
+			\cline{1-8}
+			\multicolumn{8}{|c|}{first half of K}&$S_1$\\
+			\cline{1-8}
+			\multicolumn{8}{|c|}{Second half of K}&$S_2$\\
+			\cline{1-8}
+			\multicolumn{8}{|c|}{first half of N}&$S_3$\\
+			\cline{1-8}
+			\multicolumn{8}{|c|}{Second half of N}&$S_4$\\
+			\cline{1-8}
+		\end{tabular}
+	\end{frame}
+	
+	\subsection{Encryption and decryption phases}
+	\begin{frame}
+		\frametitle{Encryption and decryption phases}
 		
-		MonkeyDuplex based
+		4 phases: Initialization, Associated data process, plaintext/ciphertext process, Finalization
+		
+		\begin{figure}
+			\centering
+			\resizebox{350pt}{80pt}{
+				\input{ascon-128}
+			}
+			\caption{Ascon-AEAD mode, from \cite{cours_crypto}}
+		\end{figure}	
 	\end{frame}
 	
 	\subsection{The permutation}
@@ -159,117 +276,91 @@
 		Extern permutation: $p^{12}$
 		
 		\begin{columns}[T]
-			\column{0.32\textwidth}
-			$$p_C$$
-			$\newline$
-				{\tiny 
-				\begin{tabularx}{0.1\textwidth}{|*{8}{p{0.01cm}|}X}
-					\cline{1-8}
-					&&&&&&&&$S_0$\\
-					\cline{1-8}
-					&&&&&&&&$S_1$\\
-					\cline{1-8}
-					&&&&&&& \normalsize $\oplus$&$S_2$\\
-					\cline{1-8}
-					&&&&&&&&$S_3$\\
-					\cline{1-8}
-					&&&&&&&&$S_4$\\
-					\cline{1-8}
-				\end{tabularx}}
-%				\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words{}}
+			\column{0.47\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.6\linewidth]{img_files/sbox_computation}
+				\caption{S-box computation for the first byte of each word}
+				\label{fig:comp}
+			\end{figure}
 			
-			\column{0.32\textwidth}
+			\column{0.47\textwidth}
 			$$p_S$$
 			\begin{figure}
-				\includegraphics[scale=0.2]{circuit}
-				\caption{Circuit to compute the S-box}
+				\includegraphics[scale=0.2]{img_files/circuit}
+				\caption{Circuit to compute the S-box, from \cite{norme}}
 				\label{circuit_sbox}
 			\end{figure}
 			
-			\column{0.32\textwidth}
-			$$p_L$$
-			\tiny
-			\begin{gather*}
-				\Sigma_0(S_0) = S_0 \oplus (S_0 >>> 19) \oplus (S_0 >>> 28)\\
-				\Sigma_1(S_1) = S_1 \oplus (S_1 >>> 61) \oplus (S_1 >>> 39)\\
-				\Sigma_2(S_2) = S_2 \oplus (S_2 >>> \;  1) \oplus (S_2 >>> \; 6)\\
-				\Sigma_3(S_3) = S_3 \oplus (S_3 >>> 10) \oplus (S_3 >>> 17)\\
-				\Sigma_4(S_4) = S_4 \oplus (S_4 >>> \; 7) \oplus (S_4 >>> 41)\\
-			\end{gather*}
 		\end{columns}
 	\end{frame}
 	
-	\subsection{Encryption and decryption phases}
+	\subsection{An analysis of the S-box}
 	\begin{frame}
-		\frametitle{Encryption and decryption phases}	
-		\begin{itemize}
-			\item Initialization: state creation and modification
-			$$S \leftarrow p^{a}( \underbrace{IV}_{S_0}||\underbrace{K}_{S_1,S_2}||\underbrace{n}_{S_3,S_4})$$
-			$$S \leftarrow S \oplus 0^{192} || K$$
-			\item Associated data process: updates the state using blocks of $r$-bits from $A=(A_1||..||A_s)$
-			\item Plaintext/Ciphertext process: each block of the plaintext or ciphertext is included in the state
-			\item Finalization: computes the tag thanks to the key and the state
-		\end{itemize}	
+		\frametitle{Table linking the output of the S-box and the key}
+		\begin{figure}[h]
+			\centering
+			\begin{tabular}{|c|c|}
+				\hline
+				$(n_0^j,n_1^j,IV^j)$&$S_4^j$\\
+				\hline\hline
+				$(0,0,0)$&$k_0^j$\\
+				\hline
+				$(0,0,1)$&$0$\\
+				\hline
+				$(0,1,0)$&$1$\\
+				\hline
+				$(0,1,1)$&$1 \oplus k_0^j$\\
+				\hline
+				$(1,0,0)$&$1 \oplus k_0^j$\\
+				\hline
+				$(1,0,1)$&$1$\\
+				\hline
+				$(1,1,0)$&$0$\\
+				\hline
+				$(1,1,1)$&$k_0^j$\\
+				\hline
+			\end{tabular}
+			\caption{Link between $k_0^j$ and $S_4^j$ depending on $IV$ and $N$, from \cite{these}}
+			\label{link_k_s4}
+		\end{figure}
 	\end{frame}
-
 	
-	\section{Methodology}
-	\subsection{Capture}
+	\section{A side-channel attack}
+	\subsection{Hardware}
 	\begin{frame}
 		\frametitle{ChipWhisperer-Lite}
-		\begin{columns}
-			\column{0.45\textwidth}
-			\begin{figure}[h]
-				\includegraphics[width=\textwidth]{cwlite_basic1}
-				\caption{ChipWhisperer Lite board}
-				\label{fig:cw}
-			\end{figure}
-			
-			\column{0.45\textwidth}
-			\begin{itemize}
-				\item Triggers around the S-box
-				\item Traces with variable and fixed nonces  and keys captured
-			\end{itemize}
-		\end{columns}
+		\begin{figure}[h]
+			\raggedright
+			\includegraphics[width=0.8\textwidth]{img_files/cwlite_basic1}
+			\caption{ChipWhisperer Lite board, from \cite{cwdoc}}
+			\label{fig:cw}
+		\end{figure}
+		Traces with variable and fixed nonces  and keys captured
+	\end{frame}
+	
+	\subsection{CPA attacks}
+	\begin{frame}
+		\frametitle{Steps for a CPA attack}
+		\begin{itemize}
+			\item Choose a target (divide-and-conquer)
+			\item Compute the algorithm multiple times to gain traces
+			\item Find model for the consumption
+			\item Deduce the hypothesis that correlates best
+		\end{itemize}
+		\begin{figure}[H]
+			\includegraphics[width=0.5\textwidth]{img_files/corr_aes}
+			\caption{CPA on another encryption standard}
+		\end{figure}
 	\end{frame}
 	
 	\subsection{Analysis}
 	\begin{frame}
 		\frametitle{Analyses done}
 		\begin{itemize}
-			\begin{columns}
-				\column{0.55\textwidth}
-				\item Finding the best theoretical attack path (HW vs value, vertical vs horizontal)
-				\item Comparing distinguishers (Pearson correlation vs mutual information)
-				\item Attack: finding the vertical output and deduct the key
-				\column{0.4\textwidth}
-				\begin{figure}[h]
-					\centering
-					\begin{tabular}{|c|c|}
-						\hline
-						$(n_0^j,n_1^j,IV^j)$&$S_4^j$\\
-						\hline\hline
-						$(0,0,0)$&$k_0^j$\\
-						\hline
-						$(0,0,1)$&$0$\\
-						\hline
-						$(0,1,0)$&$1$\\
-						\hline
-						$(0,1,1)$&$1 \oplus k_0^j$\\
-						\hline
-						$(1,0,0)$&$1 \oplus k_0^j$\\
-						\hline
-						$(1,0,1)$&$1$\\
-						\hline
-						$(1,1,0)$&$0$\\
-						\hline
-						$(1,1,1)$&$k_0^j$\\
-						\hline
-					\end{tabular}
-					\caption{Link between $k_0^j$ and $S_4^j$ depending on $IV$ and $N$}
-					\label{link_k_s4}
-				\end{figure}
-			\end{columns}
+			\item Finding the best model(HW vs value, vertical vs horizontal)
+			\item Comparing distinguishers (Pearson correlation vs mutual information)
+			\item Attack: finding the vertical output and deduct the key
 		\end{itemize}
 	\end{frame}
 	
@@ -279,7 +370,7 @@
 		\frametitle{Results vertical vs horizontal}
 		\begin{figure}[h]
 			\centering
-			\includegraphics[scale=0.3]{h_and_v_one_byte}
+			\includegraphics[scale=0.3]{img_files/h_and_v_one_byte}
 			\caption{Mutual information for the horizontal and the vertical value}
 			\label{hvval}
 		\end{figure}
@@ -289,7 +380,7 @@
 		\frametitle{Results HW vs value}
 		\begin{figure}
 			\centering
-			\includegraphics[scale=0.3]{vertical_one_bit}
+			\includegraphics[scale=0.3]{img_files/vertical_one_bit}
 			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ and its value}
 			\label{vHW}
 		\end{figure}
@@ -299,7 +390,7 @@
 		\frametitle{Results distinguisher}
 		\begin{figure}
 			\centering
-			\includegraphics[scale=0.3]{corr_vs_MI_hHW}
+			\includegraphics[scale=0.3]{img_files/corr_vs_MI_hHW}
 			\caption{Mutual information and absolute Pearson correlation for a horizontal attack on the reference implementation}
 			\label{corvsMI}
 		\end{figure}
@@ -309,7 +400,7 @@
 		\frametitle{Results attack}
 		\begin{figure}[h]
 			\centering
-			\includegraphics[scale=0.3]{nonces_alea}
+			\includegraphics[scale=0.3]{img_files/nonces_alea}
 			\caption{Mutual information between the Hamming weight of the outputs and the power consumption, for each of the possible outputs for the first nonce}
 			\label{all_alea}
 		\end{figure}
@@ -319,10 +410,94 @@
 	\begin{frame}
 		\frametitle{Conclusion}
 		\begin{itemize}
-			\item Apparent weaknesses
-			\item Unsuccessful attempts
+			\item Good leaks compared to random values
+			\item Though apparent weaknesses, unsuccessful attempts
+			\item Not enough randomness with false key hypotheses
 			\item Leads to follow: belief propagation
 		\end{itemize}
 	\end{frame}
-
+	
+	
+	\appendix
+	\bibliographystyle{IEEEtran} 
+	\bibliography{IEEEabrv,refs}
+	
+	\section{Equations for linking the output of the S-box to the key}
+	\begin{frame}
+		\frametitle{Finding this table (1)}
+		\begin{gather*}
+			S_4^j = n_o^j \oplus n_1^j \oplus k_0^j \times (1 \oplus IV^j \oplus n_1^j)\\
+			S _4^j =\left \{	
+			\begin{array}{ll}
+				k_0^j \times (1 \oplus IV^j) & if\ (n_0^j,n_1^j)=(0,0)\\
+				k_0^j \times IV^j & if\ (n_0^j,n_1^j)=(1,1)\\
+				1 \oplus k_0^j \times IV^j & if\ (n_0^j,n_1^j)=(0,1)\\
+				1 \oplus k_0^j \times (1 \oplus IV^j) & if\ (n_0^j,n_1^j)=(1,0)\\
+			\end{array}
+			\right.
+		\end{gather*}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Finding this table (2)}
+		\noindent Then if $IV^j = 0$: 
+		$$S _4^j =\left \{	
+		\begin{array}{ll}
+			k_0^j& if\ (n_0^j,n_1^j)=(0,0)\\
+			0& if\ (n_0^j,n_1^j)=(1,1)\\
+			1& if\ (n_0^j,n_1^j)=(0,1)\\
+			1 \oplus k_0^j& if\ (n_0^j,n_1^j)=(1,0)\\
+		\end{array}
+		\right.$$
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Finding this table (3)}
+		\noindent Otherwise, if $IV^j = 1$:
+		$$S _4^j =\left \{	
+		\begin{array}{ll}
+			0& if\ (n_0^j,n_1^j)=(0,0)\\
+			k_0^j& if\ (n_0^j,n_1^j)=(1,1)\\
+			1 \oplus k_0^j& if\ (n_0^j,n_1^j)=(0,1)\\
+			1& if\ (n_0^j,n_1^j)=(1,0)\\
+		\end{array}
+		\right.$$
+	\end{frame}
+	
+	\section{Complementary graphs}
+	\begin{frame}
+		\frametitle{Complementary graph (1)}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.3]{img_files/vertical_one_byte}
+			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ and its value like \ref{vHW} but for random nonces}
+			\label{vHW&val}
+		\end{figure}
+	\end{frame}
+	
+	\begin{frame}
+		\frametitle{Complementary graph (2)}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.3]{img_files/HWalea}
+			\caption{Mutual information between power consumption and vertical HW or random possible HW}
+			\label{HWalea}
+		\end{figure}
+	\end{frame}
+	
+	\section{Main code} \lstinputlisting[language=C,style=Cstyle,caption=Implementation for ascon.c]{code_files/ascon.c}
+	
+	\lstinputlisting[language=C,style=Cstyle,caption=Implementation for ascon.h]{code_files/ascon.h}
+	
+	\lstinputlisting[language=C,style=Cstyle,caption=Implementation for permutation.c]{code_files/permutation.c}
+	
+	\lstinputlisting[language=C,style=Cstyle,caption=Implementation for permutation.h]{code_files/permutation.h}
+	
+	\lstinputlisting[language=C,style=Cstyle,caption=Implementation for main.c]{code_files/main.c}
+	
+	\lstinputlisting[language=Python,style=Cstyle,caption=Implementation for trace capture for the ChipWhisperer]{code_files/traces_sca.py}
+	
+	\lstinputlisting[style=CStyle, caption=Analysis in Julia of the traces following the established attack]{code_files/decryption_analysis_cpa.jl}
+	
+	
 \end{document}

@@ -1,12 +1,12 @@
-\resizebox{190pt}{70pt}{
+\resizebox{220pt}{75pt}{
 	
 \begin{tikzpicture}[node distance = 1cm and 0.75cm]
 
 % 1er tour chiffrement
 
 \node[XOR, right = of dom.east|-helpnorth] (x1) {};
-\node[AE_msg, above = of x1] (m1) {$P_1$};
-\node[AE_ctx, right = of m1] (c1) {$C_1$};
+\node[AE_ctx, above = of x1] (m1) {$P_1$};
+\node[AE_msg, right = of m1] (c1) {$C_1$};
 
 \draw[-{Latex[length=2mm]}] (pa2.east|-x1) -- (x1);
 \draw[-{Latex[length=2mm]}] (x1) -- (m1) node[midway] {$/$} node[midway, left=0.2cm] {\small $128$};
@@ -25,8 +25,8 @@
 \node[right = of p1.east|-helpsouth, inner sep = 10pt] (cdotsouth) {$\cdots$};
 
 \node[XOR, right = of cdotnorth] (x2) {};
-\node[AE_msg, above = of x2] (m2) {$P_{t-1}$};
-\node[AE_ctx, right = of m2] (c2) {$C_{t-1}$};
+\node[AE_ctx, above = of x2] (m2) {$P_{t-1}$};
+\node[AE_msg, right = of m2] (c2) {$C_{t-1}$};
 
 
 \draw[line] (p1.east|-cdotnorth) -- (cdotnorth);
@@ -48,10 +48,10 @@
 
 \node[XOR, right = of p2.east|-x1] (x3) {};
 \node[XOR, below = of x3] (x4) {};
-\node[AE_msg, above = of x3, path picture={
+\node[AE_ctx, above = of x3, text width = 0.75cm] (m3) {$P_{t}$};
+\node[AE_msg, right = of m3, path picture={
       \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
-    }] (m3) {$P_{t}$};
-\node[AE_ctx, right = of m3, text width = 0.75cm] (c3) {$C_{t}$};
+    }] (c3) {$C_{t}$};
 \node[AE_key, fill = gray!20, below = of x4] (dom) {$10^*$};
 
 \draw[-{Latex[length=2mm]}] (p2.east|-x3) -- (x3);

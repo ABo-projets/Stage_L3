@@ -1,23 +1,6 @@
-\documentclass{standalone}
-\usepackage{rotating}	%% introduce sideways env
-\usepackage{tikz}
-\usepackage{amssymb}
-
-%% Public TikZ libraries
-\usetikzlibrary{positioning}
-\usetikzlibrary{shapes}
-\usetikzlibrary{calc}
-
-
-\usetikzlibrary{mycrypto.symbols}
-
-%\usepackage{fmtcount}
-
-\begin{document}
-
 \begin{tikzpicture}[node distance = 1cm]
 
-\node[AE_E] (aead) {AEAD};
+\node[AE_msg] (aead) {AEAD};
 
 \node[left = of $(aead.north west)!3/4!(aead.south west)$] (m) {$M$};
 \node[left = of $(aead.north west)!1/4!(aead.south west)$] (a) {$A$};
@@ -29,14 +12,13 @@
 \node[right = of $(aead.north east)!3/4!(aead.south east)$] (t) {$T$};
 
 
-\draw[edge] (m) -- (aead.west|-m);
-\draw[edge] (a) -- (aead.west|-a);
+\draw[-{Latex[length=2mm]}] (m) -- (aead.west|-m);
+\draw[-{Latex[length=2mm]}] (a) -- (aead.west|-a);
 
-\draw[edge] (k) -- (aead.north-|k);
-\draw[edge] (n) -- (aead.north-|n);
+\draw[-{Latex[length=2mm]}] (k) -- (aead.north-|k);
+\draw[-{Latex[length=2mm]}] (n) -- (aead.north-|n);
 
-\draw[edge] (aead.east|-c) -- (c);
-\draw[edge] (aead.east|-t) -- (t);
+\draw[-{Latex[length=2mm]}] (aead.east|-c) -- (c);
+\draw[-{Latex[length=2mm]}] (aead.east|-t) -- (t);
 
 \end{tikzpicture}
-\end{document}

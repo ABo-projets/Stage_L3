@@ -20,14 +20,14 @@
 
 
 
-\usepackage{rotating}	%% introduce sideways env
+	\usepackage{rotating}	%% introduce sideways env
 \usepackage{tikz}
 \usepackage{amssymb}
 
 %% Public TikZ libraries
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes}
-\usetikzlibrary{calc}
+\usetikzlibrary{calc,cipher,sponge}
 
 
 \usetikzlibrary{arrows}			%% Include regular arrows
@@ -187,7 +187,7 @@
 
 \title{Side-channel attacks on Ascon's S-box}
 
-\date{19/05/2025 to 11/07/2025}
+\date{May-July 2025}
 
 \setbeamertemplate{page number in head/foot}[appendixframenumber]
 
@@ -206,13 +206,13 @@
 		\textbf{Goal:} Study the leaks from the winner for lightweight cryptography Ascon to theorize a SCA attack
 	\end{frame}
 	
-	\AtBeginSection[]
-	{
-		\begin{frame}
-			\frametitle{Table of Contents}
-			\tableofcontents[currentsection]
-		\end{frame}
-	}
+%	\AtBeginSection[]
+%	{
+%		\begin{frame}
+%			\frametitle{Table of Contents}
+%			\tableofcontents[currentsection]
+%		\end{frame}
+%	}
 	
 	\begin{frame}
 		\frametitle{Table of Contents}
@@ -222,7 +222,7 @@
 	\section{Ascon-AEAD}
 	\subsection{Presentation}
 	\begin{frame}
-		\frametitle{What is Ascon?}
+		\frametitle{What is Ascon-AEAD?}
 		\textbf{Authenticated Encryption with Associated Data (AEAD)}: encrypt, check authentication of content and associated data
 		
 		\begin{figure}
@@ -231,13 +231,11 @@
 			\caption{AEAD algorithm from \cite{cours_crypto}}
 		\end{figure}
 		
-		NIST winner for lightweight cryptography
-		
 	\end{frame}
 	
 	\begin{frame}
 		\frametitle{Ascon's State}
-		\begin{tabular}{|c|c|c|c|c|c|c|c|l}
+		\begin{tabular}{ccccccccl}
 			byte 0&byte 1&byte 2&byte 3&byte 4&byte 5&byte 6&byte 7&\\
 			\cline{1-8}
 			\multicolumn{8}{|c|}{IV}&$S_0$\\
@@ -272,8 +270,6 @@
 	\begin{frame}
 		\frametitle{Ascon's permutation(s)}
 		$p = p_L \circ p_S \circ p_C$\\
-		Intern permutation: $p^8$\\
-		Extern permutation: $p^{12}$
 		
 		\begin{columns}[T]
 			\column{0.47\textwidth}
@@ -285,13 +281,16 @@
 			\end{figure}
 			
 			\column{0.47\textwidth}
-			$$p_S$$
 			\begin{figure}
-				\includegraphics[scale=0.2]{img_files/circuit}
-				\caption{Circuit to compute the S-box, from \cite{norme}}
+				\resizebox*{150pt}{90pt}{
+				\input{ascon-sbox}
+				}
+				\caption{Circuit to compute the S-box, from \protect \footnotemark}
 				\label{circuit_sbox}
 			\end{figure}
 			
+			\footnotetext{\url{https://extgit.isec.tugraz.at/meichlseder/tikz}}
+
 		\end{columns}
 	\end{frame}
 	
@@ -332,18 +331,16 @@
 		\frametitle{ChipWhisperer-Lite}
 		\begin{figure}[h]
 			\raggedright
-			\includegraphics[width=0.8\textwidth]{img_files/cwlite_basic1}
+			\includegraphics[width=0.9\textwidth]{img_files/cwlite_basic1}
 			\caption{ChipWhisperer Lite board, from \cite{cwdoc}}
 			\label{fig:cw}
 		\end{figure}
-		Traces with variable and fixed nonces  and keys captured
 	\end{frame}
 	
 	\subsection{CPA attacks}
 	\begin{frame}
 		\frametitle{Steps for a CPA attack}
 		\begin{itemize}
-			\item Choose a target (divide-and-conquer)
 			\item Compute the algorithm multiple times to gain traces
 			\item Find model for the consumption
 			\item Deduce the hypothesis that correlates best
@@ -353,48 +350,51 @@
 			\caption{CPA on another encryption standard}
 		\end{figure}
 	\end{frame}
-	
+
 	\subsection{Analysis}
 	\begin{frame}
 		\frametitle{Analyses done}
 		\begin{itemize}
-			\item Finding the best model(HW vs value, vertical vs horizontal)
-			\item Comparing distinguishers (Pearson correlation vs mutual information)
-			\item Attack: finding the vertical output and deduct the key
+			\item{Finding the best model}
+				\begin{itemize}
+					\item{Vertical vs horizontal}
+					\item{HW vs value}
+				\end{itemize}
+			\item{Attack: finding the vertical output and deduct the key}
 		\end{itemize}
 	\end{frame}
 	
 	
 	\section{Results}
 	\begin{frame}
-		\frametitle{Results vertical vs horizontal}
-		\begin{figure}[h]
-			\centering
-			\includegraphics[scale=0.3]{img_files/h_and_v_one_byte}
-			\caption{Mutual information for the horizontal and the vertical value}
-			\label{hvval}
-		\end{figure}
+		\frametitle{Results vertical vs horizontal and HW vs value}
+		\begin{columns}[T]
+			\column{0.47\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[scale=0.25]{img_files/h_and_v_one_byte}
+				\caption{Mutual information for the horizontal and the vertical value}
+				\label{hvval}
+			\end{figure}
+			\column{0.47\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[scale=0.25]{img_files/vertical_one_bit}
+				\caption{Mutual information between power consumption and HW or value}
+				\label{vHW}
+			\end{figure}
+		\end{columns}
 	\end{frame}
 	
-	\begin{frame}
-		\frametitle{Results HW vs value}
-		\begin{figure}
-			\centering
-			\includegraphics[scale=0.3]{img_files/vertical_one_bit}
-			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ and its value}
-			\label{vHW}
-		\end{figure}
-	\end{frame}
-	
-	\begin{frame}
-		\frametitle{Results distinguisher}
-		\begin{figure}
-			\centering
-			\includegraphics[scale=0.3]{img_files/corr_vs_MI_hHW}
-			\caption{Mutual information and absolute Pearson correlation for a horizontal attack on the reference implementation}
-			\label{corvsMI}
-		\end{figure}
-	\end{frame}
+%	\begin{frame}
+%		\frametitle{Results distinguisher}
+%		\begin{figure}
+%			\centering
+%			\includegraphics[scale=0.3]{img_files/corr_vs_MI_hHW}
+%			\caption{Mutual information and absolute Pearson correlation for a horizontal attack on the reference implementation}
+%			\label{corvsMI}
+%		\end{figure}
+%	\end{frame}
 	
 	\begin{frame}
 		\frametitle{Results attack}
@@ -499,5 +499,5 @@
 	
 	\lstinputlisting[style=CStyle, caption=Analysis in Julia of the traces following the established attack]{code_files/decryption_analysis_cpa.jl}
 	
-	
+
 \end{document}

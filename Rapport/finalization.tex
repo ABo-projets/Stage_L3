@@ -1,4 +1,4 @@
-\resizebox{100pt}{75pt}{
+\resizebox{110pt}{85pt}{
 	
 \begin{tikzpicture}[node distance = 1cm and 0.75cm]
 % finalisation
@@ -11,7 +11,8 @@
       \fill[gray!20] (path picture bounding box.north) rectangle (path picture bounding box.south east);
     }] (kf) {$K||0^*$};
 
-\draw[-{Latex[length=2mm]}] (x3) -- (x3-|pf.west);
+\node[below = of c3] (test) {};
+\draw[-{Latex[length=2mm]}] (test) -- (test-|pf.west);
 \draw[-{Latex[length=2mm]}] (x4) -- (x4-|pf.west);
 \draw[-{Latex[length=2mm]}] (p2.east|-xkf) -- (xkf);
 \draw[-{Latex[length=2mm]}] (xkf|-kf.north) -- (xkf);

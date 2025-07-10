@@ -1,0 +1,66 @@
+\newcommand{\advanceS}[1][.5]{\draw (s) + (#1,0) coordinate (s);}
+\newcommand{\updateTo}[2]{ \draw[next] (#1) -- (#2); \node also [alias=#1] (#2); }
+\begin{tikzpicture}[scale=.70, rounded corners=2pt,
+	op/.append style={minimum size=1.25ex},
+	tee/.style={}, every node/.append style={inner sep=1pt}]
+	% --- inputs ---
+	\coordinate (s);
+	\foreach \x in {0,...,5} { \draw (s|-0,-\x) coordinate (w\x); }
+	\foreach \x in {0,...,4} { \node[left] (x\x) at (w\x) {$x_{\x}$}; }
+	
+	% --- input xors ---
+	\advanceS
+	\draw (s|-w0) coordinate[xor] (in0);  \updateTo{w0}{in0}
+	\draw (s|-w4) coordinate[tee] (tin0); \draw[next] (tin0) -- (in0);
+	\advanceS
+	\draw (s|-w2) coordinate[xor] (in2);  \updateTo{w2}{in2}
+	\draw (s|-w1) coordinate[tee] (tin2); \draw[next] (tin2) -- (in2);
+	\draw (s|-w4) coordinate[xor] (in4);  \updateTo{w4}{in4}
+	\draw (s|-w3) coordinate[tee] (tin4); \draw[next] (tin4) -- (in4);
+	
+	% --- chi nots ---
+	\advanceS
+	\draw (s|-w0) coordinate[tee] (tand4);
+	\advanceS
+	\foreach \x in {0,...,4} { \draw (s|-w\x) +(0,-.5) node[left] (cnot\x) {$1$}; }
+	\advanceS
+	\foreach \x in {0,...,4} { \draw (s|-w\x)    coordinate[tee] (tnot\x);
+		\draw (s|-cnot\x) coordinate[xor] (not\x);
+		\draw[next] (cnot\x) -- (not\x);
+		\draw[next] (tnot\x) -- (not\x); }
+	
+	% --- chi ands ---
+	\advanceS[.75]
+	\foreach \x in {0,...,4} { \draw (s|-cnot\x) coordinate[andalt] (and\x);
+		\draw[next] (not\x) -- (and\x); }
+	\foreach \x/\X in {0/1,1/2,2/3,3/4} { \draw (and\x|-w\X) coordinate[tee] (tand\x); 
+		\draw[next] (tand\x) -- (and\x); }
+	\draw[next] (tand4) |- (not4|-w5) -| (and4);
+	
+	% --- chi xors ---
+	\advanceS[1.25]
+	\foreach \x in {0,...,4} { \draw (s|-w\x) coordinate[xor] (xor\x);
+		\updateTo{w\x}{xor\x} }
+	\foreach \x/\X in {0/1,1/2,2/3,3/4} { \draw[next] (and\X) -- +(.3,0) -- (xor\x|-and\x) -- (xor\x); }
+	\draw[next] (and0) -- +(.3,0) -- ($(and4)!.5!(xor4|-and4)$) -- (xor4|-and4) -- (xor4);
+	
+	% --- output xors ---
+	\advanceS[.75]
+	\draw (s|-w1) coordinate[xor] (out1);  \updateTo{w1}{out1}
+	\draw (s|-w0) coordinate[tee] (tout1); \draw[next] (tout1) -- (out1);
+	\draw (s|-w3) coordinate[xor] (out3);  \updateTo{w3}{out3}
+	\draw (s|-w2) coordinate[tee] (tout3); \draw[next] (tout3) -- (out3);
+	\advanceS
+	\draw (s|-w0) coordinate[xor] (out0);  \updateTo{w0}{out0}
+	\draw (s|-w4) coordinate[tee] (tout0); \draw[next] (tout0) -- (out0);
+	\advanceS
+	\draw (s|-w2) coordinate[xor] (out2);  \updateTo{w2}{out2}
+	\draw (s|-and2) node[below] (cout2) {$1$};
+	\draw[next] (cout2) -- (out2);
+	%\draw (s|-and2) node[left=.15] (cout2) {$1$};
+	%\draw[next] (cout2) -| (out2);
+	
+	% --- outputs ---
+	\advanceS
+	\foreach \x in {0,...,4} { \node[right] (y\x) at (s|-w\x) {$x_{\x}$}; \updateTo{w\x}{y\x} }
+\end{tikzpicture}

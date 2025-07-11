@@ -1,9 +1,13 @@
 # Stage_L3
 
 Alexane BOLDO, intern from ENS Rennes
+
 OCIF, IRISA,
+
 IMT Atlantique, campus de Rennes
+
 supervised by Hélène Le Bouder 
+
 May-July 2025
 
 * unprotected/unmasked Ascon-AEAD implementation in Ascon_implementation

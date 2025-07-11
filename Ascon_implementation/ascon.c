@@ -1,3 +1,9 @@
+/**
+* function implementation for every phase of encryption and decryption
+* @author Alexane Boldo
+* @date 11/07/25
+*/
+
 #include "ascon.h"
 #include "permutation.h"
 #include <stdint.h>

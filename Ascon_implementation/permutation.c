@@ -1,3 +1,8 @@
+/**
+* function implementation for Ascon's permutation
+* @author Alexane Boldo
+* @date 11/07/25
+*/
 
 #include "permutation.h"
 

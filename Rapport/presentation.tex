@@ -181,9 +181,13 @@
 	language=C
 }
 
+\setbeamertemplate{navigation symbols}{}
+
 \author{Alexane Boldo}
 
-\institute{OCIF, IRISA}
+\institute[]{ENS Rennes \and
+		OCIF, IRISA \and
+		IMT Atlantique}
 
 \title{Side-channel attacks on Ascon's S-box}
 
@@ -242,11 +246,11 @@
 			\cline{1-8}
 			\multicolumn{8}{|c|}{first half of K, $K_0$}&$S_1$\\
 			\cline{1-8}
-			\multicolumn{8}{|c|}{Second half of K, $K_1$}&$S_2$\\
+			\multicolumn{8}{|c|}{second half of K, $K_1$}&$S_2$\\
 			\cline{1-8}
 			\multicolumn{8}{|c|}{first half of N, $N_0$}&$S_3$\\
 			\cline{1-8}
-			\multicolumn{8}{|c|}{Second half of N, $N_1$}&$S_4$\\
+			\multicolumn{8}{|c|}{second half of N, $N_1$}&$S_4$\\
 			\cline{1-8}
 		\end{tabular}
 	\end{frame}
@@ -255,7 +259,7 @@
 	\begin{frame}
 		\frametitle{Encryption and decryption phases}
 		
-		4 phases: Initialization, Associated data process, plaintext/ciphertext process, Finalization
+		4 phases: initialization, associated data process, plaintext/ciphertext process, finalization
 		
 		\begin{figure}
 			\centering
@@ -277,7 +281,7 @@
 				\resizebox*{150pt}{90pt}{
 					\input{ascon-sbox-init}
 				}
-				\caption{Circuit to compute the S-box, from \protect \footnotemark, bijection $\llbracket1;31 \rrbracket \rightarrow \llbracket 1;31 \rrbracket$}
+				\caption{Circuit to compute the S-box, from \cite{crypto_schema}, permutation of $\llbracket1;31 \rrbracket$}
 				\label{circuit_sbox}
 			\end{figure}
 			
@@ -288,8 +292,6 @@
 				\caption{S-box computation for the first byte of each word}
 				\label{fig:comp}
 			\end{figure}
-			
-			\footnotetext{\url{https://extgit.isec.tugraz.at/meichlseder/tikz}}
 
 		\end{columns}
 	\end{frame}
@@ -301,26 +303,26 @@
 			\centering
 			\begin{tabular}{|c|c|}
 				\hline
-				$(n_0^j,n_1^j,IV^j)$&$S_4^j$\\
+				$(N_0^j,N_1^j,IV^j)$&$S_4^j$\\
 				\hline\hline
-				$(0,0,0)$&$k_0^j$\\
+				$(0,0,0)$&$K_0^j$\\
 				\hline
 				$(0,0,1)$&$0$\\
 				\hline
 				$(0,1,0)$&$1$\\
 				\hline
-				$(0,1,1)$&$1 \oplus k_0^j$\\
+				$(0,1,1)$&$1 \oplus K_0^j$\\
 				\hline
-				$(1,0,0)$&$1 \oplus k_0^j$\\
+				$(1,0,0)$&$1 \oplus K_0^j$\\
 				\hline
 				$(1,0,1)$&$1$\\
 				\hline
 				$(1,1,0)$&$0$\\
 				\hline
-				$(1,1,1)$&$k_0^j$\\
+				$(1,1,1)$&$K_0^j$\\
 				\hline
 			\end{tabular}
-			\caption{Link between $k_0^j$ and $S_4^j$ depending on $IV$ and $N$, from \cite{these}}
+			\caption{Link between $K_0^j$ and $S_4^j$ depending on $IV$ and $N$, from \cite{these}}
 			\label{link_k_s4}
 		\end{figure}
 	\end{frame}
@@ -336,31 +338,22 @@
 			\label{fig:cw}
 		\end{figure}
 	\end{frame}
-	
-	\subsection{CPA attacks}
-	\begin{frame}
-		\frametitle{Steps for a CPA attack}
-		\begin{itemize}
-			\item Compute the algorithm multiple times to gain traces
-			\item Find model for the consumption
-			\item Deduce the hypothesis that correlates best
-		\end{itemize}
-		\begin{figure}[H]
-			\includegraphics[width=0.5\textwidth]{img_files/corr_aes}
-			\caption{CPA on another encryption standard}
-		\end{figure}
-	\end{frame}
 
 	\subsection{Analysis}
 	\begin{frame}
 		\frametitle{Analyses done}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.5\textwidth]{img_files/trace_ascon}
+			\caption{Power trace during Ascon's S-box}
+		\end{figure}
 		\begin{itemize}
 			\item{Finding the best model}
 				\begin{itemize}
 					\item{Vertical vs horizontal}
 					\item{HW vs value}
 				\end{itemize}
-			\item{Attack: finding the vertical output and deduct the key}
+			\item{Attack: finding the vertical output and deduce the key}
 		\end{itemize}
 	\end{frame}
 	
@@ -401,7 +394,7 @@
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.3]{img_files/nonces_alea}
-			\caption{Mutual information between the Hamming weight of the outputs and the power consumption, for each of the possible outputs for the first nonce}
+			\caption{Mutual information between the HW of the outputs and the power consumption, for each of the possible outputs for the first nonce}
 			\label{all_alea}
 		\end{figure}
 	\end{frame}

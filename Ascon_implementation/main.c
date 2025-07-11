@@ -1,3 +1,9 @@
+/**
+* main for testing
+* @author Alexane Boldo
+* @date 11/07/25
+*/
+
 #include "ascon.h"
 #include <stdint.h>
 #include <stdio.h>

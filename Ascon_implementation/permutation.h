@@ -1,3 +1,9 @@
+/**
+* function header for Ascon's implementation
+* @author Alexane Boldo
+* @date 11/07/25
+*/
+
 #include "ascon.h"
 
 #ifndef PERMUTATION_H

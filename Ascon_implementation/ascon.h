@@ -1,3 +1,8 @@
+/**
+* function implementation header for every phase of encryption and decryption
+* @author Alexane Boldo
+* @date 11/07/25
+*/
 
 #ifndef ASCON_H
 #define ASCON_H

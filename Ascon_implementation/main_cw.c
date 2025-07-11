@@ -1,3 +1,9 @@
+/**
+* main for communication with a ChipWhisperer-AE
+* @author Alexane Boldo
+* @date 11/07/25
+*/
+
 #include "ascon.h"
 #include "hal/hal.h"
 #include "hal/simpleserial.h"

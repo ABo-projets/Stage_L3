@@ -17,6 +17,46 @@
 	\usepackage{float}
 	
 	
+	\usepackage{acro}
+	\acsetup{make-links}
+	\DeclareAcronym{sca}{
+		short = SCA ,
+		long = Side-Channel Attacks
+	}
+	\DeclareAcronym{nist}{
+		short = NIST ,
+		long = National Institute of Standards and Technology
+	}
+	\DeclareAcronym{aead}{
+		short = AEAD ,
+		long = Authenticated Encryption with Associated Data
+	}
+	\DeclareAcronym{cpa}{
+		short = CPA ,
+		long = Correlation Power Analysis
+	}
+	\DeclareAcronym{mi}{
+		short = MI ,
+		long = Mutual Information
+	}
+	\DeclareAcronym{hw}{
+		short = HW ,
+		long = Hamming Weight
+	}
+	\DeclareAcronym{iv}{
+		short = IV ,
+		long = Initialization Vector
+	}
+	\DeclareAcronym{sbox}{
+		short = S-box ,
+		long = Substitution Box
+	}
+	\DeclareAcronym{aes}{
+		short = AES ,
+		long = Advanced Encryption Standard
+	}
+	
+	
 	
 	\usepackage{rotating}	%% introduce sideways env
 	\usepackage{tikz}
@@ -178,10 +218,10 @@
 	}
 	
 	\author{
-		Alexane Boldo\\
+		Alexane Boldo, ENS Rennes\\
 		Internship from May to July 2025\\
 		Supervisor: Hélène Le Bouder\\
-		OCIF, IRISA
+		OCIF, IRISA, IMT Atlantique
 	}
 	
 	\title{Side-channel attacks on Ascon's S-box}
@@ -195,32 +235,32 @@
 		
 		% Un petit résumé
 		\begin{abstract}
-			Though side-channel attacks on the National Institute of Standards and Technology winner Ascon have succeeded, simple correlation power analysis attacks targeting the S-box have failed. However, some of its properties can give more information on potential attacks, like the direction of computation or its relatively simple equations. Therefore, this article is interested in finding if those weaknesses can lead to an attack, using multiple traces of the power consumption captured by a ChipWhisperer and analyzing their correlation with the output of the S-box. The theorized attack uses a link between the key and the output, and it was found that computing seems to leak better than writing in the register. However, we were unable to use the relatively easy equations from the S-box to find weaknesses, even while controlling the nonces by attacking the decryption phase.
+			Though side-channel attacks on the National Institute of Standards and Technology winner Ascon have succeeded, simple correlation power analysis attacks targeting the \ac{sbox} have failed. However, some of its properties can give more information on potential attacks, like the direction of computation or its relatively simple equations. Therefore, this article is interested in finding if those weaknesses can lead to an attack, using multiple traces of the power consumption captured by a ChipWhisperer and analyzing their correlation with the output of the \ac{sbox}. The theorized attack uses a link between the key and the output, and it was found that computing seems to leak better than writing in the register. However, we were unable to use the relatively easy equations from the \ac{sbox} to find weaknesses, even while controlling the nonces by attacking the decryption phase.
 		\end{abstract}
 		
 		%\tableofcontents
 		
 		\section{Introduction}
-		Though mathematically secure, cryptographic algorithms can still be broken. Indeed, leakages happen during the computation of the encryption, which can be observed and analyzed to figure out the key. Such leakages can be the computation time, the power consumption, or the electromagnetic radiations and can lead to attacks recovering the key, called side-channel attacks (SCA). Therefore, a whole field of cybersecurity consists of analyzing which computations leak the most data.\\
-		This article focuses on Ascon \cite{ascon}, the winner of the National Institute of Standards and Technology (NIST) competition for Authenticated Encryption with Associated Data (AEAD), which became the standard for lightweight cryptography \cite{norme}. Multiple attacks \cite{cpa_lin,dl_cpa} based on Correlation Power Analysis (CPA) \cite{cpa_aes} have already been performed and analyzed \cite{cpa_analysis} to find a stronger implementation of Ascon, using masking to render SCA harder.\\
-		However, to our knowledge, no CPA attack on the non-linear layer of the permutation were successful, although such permutations are known to provide leakage. Furthermore, an analysis provided by Sarry\cite{these} deducts equations to link the output of this layer to the secret key.\\
-		Therefore, this article uses a CPA in order to determine where exactly the leakage is the clearer, by attacking the output of the substitution layer of the first-round of the permutation. The goal is to provide an analysis finding the best path to attack it.\\
-		This paper first describes Ascon-AEAD then the methodology used to attack it. Next, it presents the best choices for the CPA attack after a small presentation of its concept. Lastly, Sarry's equations \cite{these} are used to try an attack, and its failure is analyzed.
+		Though mathematically secure, cryptographic algorithms can still be broken. Indeed, leakages happen during the computation of the encryption, which can be observed and analyzed to figure out the key. Such leakages can be the computation time, the power consumption, or the electromagnetic radiations and can lead to attacks recovering the key, called \ac{sca}. Therefore, a whole field of cybersecurity consists of analyzing which computations leak the most data.\\
+		This article focuses on Ascon \cite{ascon}, the winner of the \ac{nist} competition for \ac{aead}, which became the standard for lightweight cryptography \cite{norme}. Multiple attacks \cite{cpa_lin,dl_cpa} based on \ac{cpa} \cite{cpa_aes} have already been performed and analyzed \cite{cpa_analysis} to find a stronger implementation of Ascon, using masking to render \ac{sca} harder.\\
+		However, to our knowledge, no \ac{cpa} attack on the non-linear layer of the permutation were successful, although such permutations are known to provide leakage. Furthermore, an analysis provided by Sarry\cite{these} deduces equations to link the output of this layer to the secret key.\\
+		Therefore, this article uses a \ac{cpa} in order to determine where exactly the leakage is the clearer, by attacking the output of the substitution layer of the first-round of the permutation. The goal is to provide an analysis finding the best path to attack it.\\
+		This paper first describes Ascon-\ac{aead} then the methodology used to attack it. Next, it presents the best choices for the \ac{cpa} attack after a small presentation of its concept. Lastly, Sarry's equations \cite{these} are used to try an attack, and its failure is analyzed.
 		
 		\section{Description of Ascon}
 		\subsection{Generalities}
-		This paper focuses on Ascon-AEAD as described in the norm \cite{norme}. This paper especially focuses on the decryption phase to use the leaks in order to recover the key.
+		This paper focuses on Ascon-\ac{aead} as described in the norm \cite{norme}. This paper especially focuses on the decryption phase to use the leaks in order to recover the key.
 		
 		\begin{algorithm}[h]
 			\KwData{128-bit key $K$ and nonce $N$, associated data $A$, ciphertext $C$ and 128-bit tag $T$}
 			\KwResult{checks authentication with $T$, if it is authenticated returns plaintext $P$ otherwise returns fail}
 		\end{algorithm}
 		
-		This algorithm uses a 320-bit state, divided into 5 64-bit words and modified through 4 phases: the initialization, the associated data process, the ciphertext process, and the finalization. IV is a known constant given in the norm \cite{norme}, and in the following, this paper refers to the rate as $r=128$.
+		This algorithm uses a 320-bit state, divided into 5 64-bit words and modified through 4 phases: the initialization, the associated data process, the ciphertext process, and the finalization. The \ac{iv} is a known constant given in the norm \cite{norme}, and in the following, this paper refers to the rate as $r=128$.
 		
 		
 		\subsection{Ascon's permutation}	\label{perm}	
-		This algorithm uses a permutation $p = p_L \circ p_S \circ p_C$, which is used at all phases of the encryption or decryption and is the target of the attack. Each notation \ref{notations} is described in more detail in the annex. This permutation is itself divided into three layers: the constant-addition layer $p_C$ that adds to the end of the third word an 8-bit round-dependent constant; the substitution layer $p_S$, which is a 5-bit S-box taking the $j^{th}$ bit of each word; and the linear-diffusion layer $p_L$ rotating each word to provide diffusion to the cipher where $\forall i \in \llbracket 1;5 \rrbracket, S_i \leftarrow \Sigma_i(S_i)$:
+		This algorithm uses a permutation $p = p_L \circ p_S \circ p_C$, which is used at all phases of the encryption or decryption and is the target of the attack. Each notation \ref{notations} is described in more detail in the annex. This permutation is itself divided into three layers: the constant-addition layer $p_C$ that adds to the end of the third word an 8-bit round-dependent constant; the substitution layer $p_S$, which is a 5-bit \ac{sbox} taking the $j^{th}$ bit of each word; and the linear-diffusion layer $p_L$ rotating each word to provide diffusion to the cipher where $\forall i \in \llbracket 1;5 \rrbracket, S_i \leftarrow \Sigma_i(S_i)$:
 		
 		\begin{gather*}
 			\Sigma_0(S_0) = S_0 \oplus (S_0 >>> 19) \oplus (S_0 >>> 28)\\
@@ -239,14 +279,14 @@
 			\resizebox*{230pt}{135pt}{
 			\input{ascon-sbox}
 			}
-			\caption{Circuit to compute the S-box, from \protect \footnotemark}
+			\caption{Circuit to compute the \ac{sbox}, from \protect \footnotemark}
 			\label{circuit_sbox}
 		\end{figure}
 		
 		\footnotetext{\url{https://extgit.isec.tugraz.at/meichlseder/tikz}}
 		
 		
-		\subsection{Ascon-AEAD's algorithm}
+		\subsection{Ascon-\ac{aead}'s algorithm}
 		Each step of the algorithm is described here, and the complete figure from \cite{cours_crypto} for the encryption can be found in the annex \ref{fig:enc}.
 		
 		\begin{enumerate}
@@ -277,8 +317,8 @@
 		
 		10K traces with a fixed key and variable nonces, 10K traces with variable keys and nonces, 10K traces with variable keys and a fixed nonce all during the $p_S$ layer were recorded on both the reference implementation and our own. The following section explains these choices.
 		
-		\section{Observations for CPA attacks}
-		\subsection{Correlation Power Analysis (CPA) definition}
+		\section{Observations for \ac{cpa} attacks}
+		\subsection{Correlation Power Analysis definition}
 		Correlation Power Analysis\cite{cpa_aes} is a type of attack using the recording of multiple traces of the execution of a known cryptographic algorithm to recover the private key. It can be blind (the attacker knows neither the plaintext nor the ciphertext) or not. It is often based on the divide-and-conquer approach, where the attacker recovers the key portion-by-portion (often byte-by-byte or bit-by-bit). The following explanation takes the notations used in the course \cite{cours}.
 		
 		\begin{enumerate}
@@ -288,11 +328,11 @@
 				\item Then the first step is to compute multiple traces of the targeted algorithm to gain observables (e.g., the plaintext and the power consumption as a function of time)
 				\item Find an attack path, i.e., a relation between observables and the target: $\mathcal{R}(k,O_S) = O_R$. It depends on physical functions, called leak functions, and cannot be computed
 			\end{itemize}
-			\item \textbf{Prediction:} Because the exact leak functions cannot be computed, the attacker has to find a model to approximate it (e.g., the Hamming Weight (HW) of the byte for the power consumption, as the consumption of writing in a register depends on whether it is a 1 or a 0 that is written), it gives a new relation model, called a theoretical attack path: $\mathcal{R}_m(k,O_S) = P_{m,k}$
-			\item \textbf{Confrontation:} The attacker has to find a distinguisher, i.e., a statistical function that puts a hypothesis $k_d$ upfront of the others by confronting $O_R$ and $P_{m,k}$ (e.g., the Pearson correlation between the vector of HW and the power consumptions, at each timestamp $t$). This also gives points of interest, i.e., timestamps where the target is used.
+			\item \textbf{Prediction:} Because the exact leak functions cannot be computed, the attacker has to find a model to approximate it (e.g., the \ac{hw} of the byte for the power consumption, as the consumption of writing in a register depends on whether it is a 1 or a 0 that is written), it gives a new relation model, called a theoretical attack path: $\mathcal{R}_m(k,O_S) = P_{m,k}$
+			\item \textbf{Confrontation:} The attacker has to find a distinguisher, i.e., a statistical function that puts a hypothesis $k_d$ upfront of the others by confronting $O_R$ and $P_{m,k}$ (e.g., the Pearson correlation between the vector of \ac{hw} and the power consumptions, at each timestamp $t$). This also gives points of interest, i.e., timestamps where the target is used.
 		\end{enumerate}
 
-		This attack is well established on the previous encryption standard AES \cite{cpa_aes,aes} by attacking the S-box; however in Ascon the S-box is computed vertically and not horizontally, whereas the results are written in the words, therefore horizontally.
+		This attack is well established on the previous standard, \ac{aes} \cite{cpa_aes,aes} by attacking the \ac{sbox}; however in Ascon the \ac{sbox} is computed vertically and not horizontally, whereas the results are written in the words, therefore horizontally.
 		
 		\begin{figure}[h]
 			\centering
@@ -308,22 +348,22 @@
 				\caption{Writing in the register}
 				\label{fig:writ}
 			\end{subfigure}
-			\caption{Comparison of the direction for computing the S-box and writing in the register for the first byte of the five words}
+			\caption{Comparison of the direction for computing the \ac{sbox} and writing in the register for the first byte of the five words}
 			\label{fig:direction}
 		\end{figure}
 		
-		Therefore it is pertinent to wonder, like Sarry in \cite{these}, whether the leak is horizontal or vertical, in order to determine if the S-box leaks because of the computation or of the writing in the register and to find better strategies of masking. Hereafter, this article refers to attacks on one byte of the last word of the state as horizontal attacks and to the ones on the concatenation of the 5 bits at position $j$ on each word of the state as vertical attacks.
+		Therefore it is pertinent to wonder, like Sarry in \cite{these}, whether the leak is horizontal or vertical, in order to determine if the \ac{sbox} leaks because of the computation or of the writing in the register and to find better strategies of masking. Hereafter, this article refers to attacks on one byte of the last word of the state as horizontal attacks and to the ones on the concatenation of the 5 bits at position $j$ on each word of the state as vertical attacks.
 		
 		\subsection{Choosing a theoretical attack path and a distinguisher} \label{choice}
-		\subsubsection{Horizontal attack on the S-box}
+		\subsubsection{Horizontal attack on the \ac{sbox}}
 		In this part, the traces used are those measured on our implementation, with variable keys and a fixed nonce, in order to see what functions show the most influence from the key.
 		
-		The goal is to see if there is an adequate distinguisher for the key hypothesis, using the HW of the first horizontal byte. Two statistical functions seem promising: the Pearson correlation, usually used in CPA attacks, which failed to conclude for more than 40K traces in \cite{dl_cpa}, and the mutual information.
+		The goal is to see if there is an adequate distinguisher for the key hypothesis, using the \ac{hw} of the first horizontal byte. Two statistical functions seem promising: the Pearson correlation, usually used in \ac{cpa} attacks, which failed to conclude for more than 40K traces in \cite{dl_cpa}, and the \ac{mi}.
 		
 		\begin{figure}[h]
 		\centering
 		\includegraphics[scale=0.4]{img_files/horizontal_one_byte}
-		\caption{Normalized mutual information between the power consumption and the Hamming weight or the value of the first byte of $S_4$}
+		\caption{Normalized \ac{mi} between the power consumption and the \ac{hw} or the value of the first byte of $S_4$}
 		\label{hHW&val}
 		\end{figure}
 		
@@ -332,35 +372,35 @@
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.4]{img_files/hHW_8_bytes_zoom}
-			\caption{Mutual information between power consumption and Hamming weight of each of the 8 bytes}
+			\caption{\ac{mi} between power consumption and \ac{hw} of each of the 8 bytes}
 			\label{hHW8_zoom}
 		\end{figure}
 
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.4]{img_files/comp_ref_hHW}
-			\caption{Mutual information between power consumption and horizontal Hamming Weight on the reference implementation and on our own}
+			\caption{\ac{mi} between power consumption and horizontal \ac{hw} on the reference implementation and on our own}
 			\label{compref}
 		\end{figure}
 		
-		To check if our implementation is worse than the reference one, the graph \ref{compref} is useful and shows that both of them have clear leaks. However, these leaks don't happen at the same time, since the S-box is not written exactly the same. 
+		To check if our implementation is worse than the reference one, the graph \ref{compref} is useful and shows that both of them have clear leaks. However, these leaks don't happen at the same time, since the \ac{sbox} is not written exactly the same. 
 		
 		\begin{figure}[H]
 			\centering
 			\includegraphics[scale=0.4]{img_files/corr_vs_MI_hHW}
-			\caption{Normalized mutual information and absolute Pearson correlation for a horizontal attack on the reference implementation}
+			\caption{Normalized \ac{mi} and absolute Pearson correlation for a horizontal attack on the reference implementation}
 			\label{corvsMI}
 		\end{figure}
 		
 		Let's now compare the mutual information with the Pearson correlation. In the graph \ref{corvsMI}, a reassuring observation is that points of interest are the same no matter the distinguisher. Furthermore, though the absolute value is greater for the Pearson correlation, points of interest appear slightly clearer after normalization with the mutual information, which can help on the attack.
 		
-		\subsubsection{Vertical attack on the S-box}
-		First, let's use the same traces as before and compare to see if there is an adequate distinguisher using the HW of the first output of the S-box.
+		\subsubsection{Vertical attack on the \ac{sbox}}
+		First, let's use the same traces as before and compare to see if there is an adequate distinguisher using the \ac{hw} of the first output of the \ac{sbox}.
 		
 		\begin{figure}[h!]
 			\centering
 			\includegraphics[scale=0.4]{img_files/vertical_one_bit}
-			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ and its value}
+			\caption{\ac{mi} between power consumption and \ac{hw} of the concatenation of the first bit of each of the word of $S$ and its value}
 			\label{vHW}
 		\end{figure}
 		
@@ -371,12 +411,12 @@
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.4]{img_files/h_and_v_one_byte}
-			\caption{Normalized mutual information for the horizontal and vertical Hamming weight}
+			\caption{Normalized \ac{mi} for the horizontal and vertical \ac{hw}}
 			\label{hvval}
 		\end{figure}
 		
-		\subsection{Working CPA attack with another attack path}
-		Let's note that there is a working simple CPA attack, as proven by Daemen et al. in \cite{cpa_lin}. The idea is to first put the trigger before the linear-diffusion layer then have for key hypothesis the three bits of the key, which are XORed to have the output $S_0^0$, and simplifying equations thanks to their observations.
+		\subsection{Working \ac{cpa} attack with another attack path}
+		Let's note that there is a working simple \ac{cpa} attack, as proven by Daemen et al. in \cite{cpa_lin}. The idea is to first put the trigger before the linear-diffusion layer then have for key hypothesis the three bits of the key, which are XORed to have the output $S_0^0$, and simplifying equations thanks to their observations.
 %		
 %		\begin{figure}[h]
 %			\centering
@@ -389,9 +429,9 @@
 %		We were able to reproduce the experiment and recover the entire key.
 %		
 		
-		\section{Using equations binding the input and output of the S-box}
+		\section{Using equations binding the input and output of the \ac{sbox}}
 		\subsection{Description of the equation} \label{sec_equ}
-		Sarry \cite{these} describes in his thesis equations linking the output of the S-box to the value of the key, depending on the value of the nonce and of the IV \ref{link_k_s4}. These equations are described in the annex \ref{equations}.
+		Sarry \cite{these} describes in his thesis equations linking the output of the \ac{sbox} to the value of the key, depending on the value of the nonce and of the \ac{iv} \ref{link_k_s4}. These equations are described in the annex \ref{equations}.
 		
 		\begin{figure}[h]
 			\centering
@@ -421,13 +461,13 @@
 		\end{figure}
 		
 		\subsection{Attack path}
-		According to \cite{cpa_analysis}, attacking the S-box by distinguishing key hypotheses is very difficult and needs numerous traces, as there are multiple keys that give strong correlations to their vertical HW. We reproduced the experiment on 40K traces from the ChipWhisperer and were still unable to recover the key, as multiple false key bit hypotheses gave good results.
+		According to \cite{cpa_analysis}, attacking the \ac{sbox} by distinguishing key hypotheses is very difficult and needs numerous traces, as there are multiple keys that give strong correlations to their vertical \ac{hw}. We reproduced the experiment on 40K traces from the ChipWhisperer and were still unable to recover the key, as multiple false key bit hypotheses gave good results.
 		
-		The goal is to use the equations described in the previous section \ref{sec_equ} to recover the key thanks to the value of $S_4$. So the problem is reduced to directly finding the output of the S-box in certain conditions (i.e., convenient values of nonces that are chosen by the attacker when asking for decryption). 
+		The goal is to use the equations described in the previous section \ref{sec_equ} to recover the key thanks to the value of $S_4$. So the problem is reduced to directly finding the output of the \ac{sbox} in certain conditions (i.e., convenient values of nonces that are chosen by the attacker when asking for decryption). 
 		
-		Therefore, an other idea would be to directly have hypotheses for the output of the S-box, and to later find the associated key thanks to table \ref{link_k_s4}. To recover these traces, the attacker asks the device to decrypt random ciphertexts with random tags 10K times with chosen convenient nonces, and no matter the failure to authenticate, the algorithm goes through the attacked permutation from the initialization process.
+		Therefore, an other idea would be to directly have hypotheses for the output of the \ac{sbox}, and to later find the associated key thanks to table \ref{link_k_s4}. To recover these traces, the attacker asks the device to decrypt random ciphertexts with random tags 10K times with chosen convenient nonces, and no matter the failure to authenticate, the algorithm goes through the attacked permutation from the initialization process.
 		
-		Let's formalize our attack: there are 64 attacks for each column $j$ of the state where the target $t_j$ is $S-box(S_0^j||S_1^j||S_2^j \oplus \verb|const|_{16-a}^j||S_3^j||S_4^j)$, the vertical output of the S-box in the first trace. To find the corresponding outputs, the attacker deducts the key and then finds the associated outputs for the other traces. The attack path links these values to the measured power consumption. The theoretical attack path selected in \ref{choice} is the Hamming weight of the target $t_j$, and the distinguisher is the maximum of mutual information.
+		Let's formalize our attack: there are 64 attacks for each column $j$ of the state where the target $t_j$ is $S-box(S_0^j||S_1^j||S_2^j \oplus \verb|const|_{16-a}^j||S_3^j||S_4^j)$, the vertical output of the \ac{sbox} in the first trace. To find the corresponding outputs, the attacker deduces the key and then finds the associated outputs for the other traces. The attack path links these values to the measured power consumption. The theoretical attack path selected in \ref{choice} is the \ac{hw} of the target $t_j$, and the distinguisher is the maximum of mutual information.
 		
 		Once an output $t_j$ is found, the bit $t_j^4$ is used to deduce $k_0^j$ and this algorithm entirely recovers $k_0$. Once that is done, $k_1$ is recovered using the equations \ref{k_1}, where $S_3^j$ has already been found as $t_j^3$.
 		
@@ -444,7 +484,7 @@
 		\begin{figure}[h]
 			\centering
 			\includegraphics[scale=0.4]{img_files/nonces_half_fixed}
-			\caption{MI between the HW of the outputs (associated key in the legend) and the power consumption, for each of the possible outputs for the first nonce with half of its bits fixed}
+			\caption{\ac{mi} between the \ac{hw} of the outputs (associated key in the legend) and the power consumption, for each of the possible outputs for the first nonce with half of its bits fixed}
 			\label{half_fixed}
 		\end{figure}
 		
@@ -457,10 +497,10 @@
 		
 		Following our attacks, the graphs seem to show points of interest, however, having half the nonce fixed gives inconclusive results as all key hypotheses have the same mutual information with the power consumption \ref{half_fixed}. To compare, full random nonces were used and seemed to show more points of interest \ref{all_alea}, though the key giving the best results was not the real key used by the target.
 		
-		Though it is easy to distinguish between the correct HW and random ones (see annex \ref{HWalea}), and though the S-box is supposed to provide confusion, false keys still give false points of interest. It therefore seems that false keys don't give enough random outputs. It stems from the fact that only two bits can change in the input, so there are very few possible outputs. The theorized attack is probably still too close to the attack from \cite{dl_cpa}, proven difficult by \cite{cpa_analysis}.
+		Though it is easy to distinguish between the correct \ac{hw} and random ones (see annex \ref{HWalea}), and though the \ac{sbox} is supposed to provide confusion, false keys still give false points of interest. It therefore seems that false keys don't give enough random outputs. It stems from the fact that only two bits can change in the input, so there are very few possible outputs. The theorized attack is probably still too close to the attack from \cite{dl_cpa}, proven difficult by \cite{cpa_analysis}.
 		
 		\section{Conclusion}
-		As the non-linear function of the Ascon protocol follows simple equations, it seemed to lead to easier leaks to use. Furthermore, the attacker has control over the nonces used in the decryption part of the algorithm, which seemed to be another weakness. However, we were unable to use those weaknesses to build a successful CPA attack on the S-box. Therefore, the S-box seems more secure in Ascon than in AES, as found by Nguyen et al. in \cite{cpa_analysis}, and having power over the nonce doesn't seem to be useful. Another idea would be to use a learning phase to be able to detect the output computed through the power consumption with a single trace and then use the given equations \cite{these} to deduce the key. A belief propagation algorithm, first used on AES for side-channel attacks by Veyrat-Charvillon et al. in \cite{bp_aes}, like the ones proposed against other NIST competitors like Elephant by Sarry \cite{these}, could be interesting to later focus on.
+		As the non-linear function of the Ascon protocol follows simple equations, it seemed to lead to easier leaks to use. Furthermore, the attacker has control over the nonces used in the decryption part of the algorithm, which seemed to be another weakness. However, we were unable to use those weaknesses to build a successful \ac{cpa} attack on the \ac{sbox}. Therefore, the \ac{sbox} seems more secure in Ascon than in AES, as found by Nguyen et al. in \cite{cpa_analysis}, and having power over the nonce doesn't seem to be useful. Another idea would be to use a learning phase to be able to detect the output computed through the power consumption with a single trace and then use the given equations \cite{these} to deduce the key. A belief propagation algorithm, first used on AES for side-channel attacks by Veyrat-Charvillon et al. in \cite{bp_aes}, like the ones proposed against other \ac{nist} competitors like Elephant by Sarry \cite{these}, could be interesting to later focus on.
 		
 		\appendices
 		
@@ -468,23 +508,25 @@
 		\bibliography{IEEEabrv,refs}
 				
 		
-		\section{Abbreviations}
-		\begin{tabular}{ll}
-			\hline
-			\textbf{Abbreviation}&\textbf{Meaning}\\
-			\hline
-			SCA&Side-channel attacks\\
-			NIST&National Institute of Standards\\
-			&and Technology\\
-			AEAD& Authenticated encryption with\\
-			&associated data\\
-			CPA&Correlation Power Analysis\\
-			MI&Mutual information\\
-			HW&Hamming weight\\
-			IV&Initialization vector\\
-			S-box&Substitution box\\
-			\hline
-		\end{tabular}
+		\section{}
+%		\begin{tabular}{ll}
+%			\hline
+%			\textbf{Abbreviation}&\textbf{Meaning}\\
+%			\hline
+%			SCA&Side-channel attacks\\
+%			NIST&National Institute of Standards\\
+%			&and Technology\\
+%			AEAD& Authenticated encryption with\\
+%			&associated data\\
+%			AES&Advanced Encryption Standard\\
+%			CPA&Correlation Power Analysis\\
+%			MI&Mutual information\\
+%			HW&Hamming weight\\
+%			IV&Initialization vector\\
+%			S-box&Substitution box\\
+%			\hline
+%		\end{tabular}
+		\printacronyms
 		
 		
 		\section{Notations} \label{notations}
@@ -522,7 +564,7 @@
 			\end{tabular}
 			
 		
-		\section{Ascon-AEAD mode}
+		\section{Ascon-\ac{aead} mode}
 		
 		\begin{figure}[H]
 			\centering
@@ -532,7 +574,7 @@
 		\end{figure}
 		
 		
-		\section{Equations to link the output of the S-box to the key} \label{equations}
+		\section{Equations to link the output of the \ac{sbox} to the key} \label{equations}
 		\begin{gather*}
 			S_4^j = n_o^j \oplus n_1^j \oplus k_0^j \times (1 \oplus IV^j \oplus n_1^j)\\
 			S _4^j =\left \{	
@@ -570,14 +612,14 @@
 		\begin{figure}[H]
 			\centering
 			\includegraphics[scale=0.3]{img_files/vertical_one_byte}
-			\caption{Mutual information between power consumption and Hamming weight of the concatenation of the first bit of each of the word of $S$ and its value like \ref{vHW} but for random nonces}
+			\caption{\ac{mi} between power consumption and \ac{hw} of the concatenation of the first bit of each of the word of $S$ and its value like \ref{vHW} but for random nonces}
 			\label{vHW&val}
 		\end{figure}
 		
 		\begin{figure}[H]
 			\centering
 			\includegraphics[scale=0.3]{img_files/HWalea}
-			\caption{Mutual information between power consumption and vertical HW or random possible HW}
+			\caption{\ac{mi} between power consumption and vertical HW or random possible HW}
 			\label{HWalea}
 		\end{figure}
 		

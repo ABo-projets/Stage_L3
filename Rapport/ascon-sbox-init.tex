@@ -6,7 +6,11 @@
 	% --- inputs ---
 	\coordinate (s);
 	\foreach \x in {0,...,5} { \draw (s|-0,-\x) coordinate (w\x); }
-	\foreach \x in {0,...,4} { \node[left] (x\x) at (w\x) {$x_{\x}$}; }
+	\node[left] (x0) at (w0) {$IV$};
+	\node[left] (x1) at (w1) {$K_0$};
+	\node[left] (x2) at (w2) {$K_1$};
+	\node[left] (x3) at (w3) {$N_0$};
+	\node[left] (x4) at (w4) {$N_1$};
 	
 	% --- input xors ---
 	\advanceS
@@ -62,5 +66,5 @@
 	
 	% --- outputs ---
 	\advanceS
-	\foreach \x in {0,...,4} { \node[right] (y\x) at (s|-w\x) {$y_{\x}$}; \updateTo{w\x}{y\x} }
+	\foreach \x in {0,...,4} { \node[right] (y\x) at (s|-w\x) {$out_{\x}$}; \updateTo{w\x}{y\x} }
 \end{tikzpicture}

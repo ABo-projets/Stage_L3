@@ -240,13 +240,13 @@
 			\cline{1-8}
 			\multicolumn{8}{|c|}{IV}&$S_0$\\
 			\cline{1-8}
-			\multicolumn{8}{|c|}{first half of K}&$S_1$\\
+			\multicolumn{8}{|c|}{first half of K, $K_0$}&$S_1$\\
 			\cline{1-8}
-			\multicolumn{8}{|c|}{Second half of K}&$S_2$\\
+			\multicolumn{8}{|c|}{Second half of K, $K_1$}&$S_2$\\
 			\cline{1-8}
-			\multicolumn{8}{|c|}{first half of N}&$S_3$\\
+			\multicolumn{8}{|c|}{first half of N, $N_0$}&$S_3$\\
 			\cline{1-8}
-			\multicolumn{8}{|c|}{Second half of N}&$S_4$\\
+			\multicolumn{8}{|c|}{Second half of N, $N_1$}&$S_4$\\
 			\cline{1-8}
 		\end{tabular}
 	\end{frame}
@@ -268,25 +268,25 @@
 	
 	\subsection{The permutation}
 	\begin{frame}
-		\frametitle{Ascon's permutation(s)}
-		$p = p_L \circ p_S \circ p_C$\\
+		\frametitle{Ascon's permutation}
 		
-		\begin{columns}[T]
+		\begin{columns}
 			\column{0.47\textwidth}
-			\begin{figure}[h]
-				\centering
-				\includegraphics[width=0.6\linewidth]{img_files/sbox_computation}
-				\caption{S-box computation for the first byte of each word}
-				\label{fig:comp}
+			$p = p_L \circ \underbrace{p_S}{} \circ p_C$\\
+			\begin{figure}
+				\resizebox*{150pt}{90pt}{
+					\input{ascon-sbox-init}
+				}
+				\caption{Circuit to compute the S-box, from \protect \footnotemark, bijection $\llbracket1;31 \rrbracket \rightarrow \llbracket 1;31 \rrbracket$}
+				\label{circuit_sbox}
 			\end{figure}
 			
 			\column{0.47\textwidth}
-			\begin{figure}
-				\resizebox*{150pt}{90pt}{
-				\input{ascon-sbox}
-				}
-				\caption{Circuit to compute the S-box, from \protect \footnotemark}
-				\label{circuit_sbox}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.6\linewidth]{img_files/sbox_illustration}
+				\caption{S-box computation for the first byte of each word}
+				\label{fig:comp}
 			\end{figure}
 			
 			\footnotetext{\url{https://extgit.isec.tugraz.at/meichlseder/tikz}}
@@ -421,6 +421,136 @@
 	\appendix
 	\bibliographystyle{IEEEtran} 
 	\bibliography{IEEEabrv,refs}
+	
+	
+	\section{Complements for the permutation}
+	\begin{frame}
+		\frametitle{Permutation (1), $p_C$}
+		
+		Constant for the round $i$: $const_{16-nb_{rounds}+i}$\\
+		
+		\begin{figure}[h]
+				\centering
+				\footnotesize
+				\begin{tabularx}{0.5\textwidth}{cc||cc}
+					\hline
+					$i$&\verb|const|$_i$&$i$&\verb|const|$_i$\\
+					\hline
+					0&\verb|0x000000000000003c|&8&\verb|0x00000000000000b4|\\
+					1&\verb|0x000000000000002d|&9&\verb|0x00000000000000a5|\\
+					2&\verb|0x000000000000001e|&10&\verb|0x0000000000000096|\\
+					3&\verb|0x000000000000000f|&11&\verb|0x0000000000000087|\\
+					4&\verb|0x00000000000000f0|&12&\verb|0x0000000000000078|\\
+					5&\verb|0x00000000000000e1|&13&\verb|0x0000000000000069|\\
+					6&\verb|0x00000000000000d2|&14&\verb|0x000000000000005a|\\
+					7&\verb|0x00000000000000c1|&15&\verb|0x000000000000004b|\\
+					\hline
+				\end{tabularx}
+				\caption{Constant-addition layer, constants}
+				\label{consts}
+			\end{figure} 
+		\end{frame}
+		
+		\begin{frame}
+			\frametitle{Permutation (2), $p_C$}
+			\begin{figure}[h]
+				\centering
+				\begin{tabularx}{0.4\textwidth}{|*{8}{>{\centering\arraybackslash}X|}>{\centering\arraybackslash}X}
+					\cline{1-8}
+					&&&&&&&&$S_0$\\
+					\cline{1-8}
+					&&&&&&&&$S_1$\\
+					\cline{1-8}
+					&&&&&&& \LARGE $\oplus$&$S_2$\\
+					\cline{1-8}
+					&&&&&&&&$S_3$\\
+					\cline{1-8}
+					&&&&&&&&$S_4$\\
+					\cline{1-8}
+				\end{tabularx}
+				\caption{Constant-addition layer, each box representing a byte of one of the 64-bit words}
+				\label{const_lay}
+			\end{figure}
+	\end{frame}
+		
+	
+		
+	\begin{frame}
+		\frametitle{Permutation (3), $p_S$}
+		
+			\begin{figure}[h]
+				\small
+				\centering
+				\begin{tabular}{|c||*{8}{c|}}
+					\hline
+					$x$&0&1&2&3&4&5&6&7\\
+					\hline
+					$S-box(x)$&4&b&1f&14&1a&15&9&2\\
+					\hline\hline
+					$x$&8&9&a&b&c&d&e&f\\
+					\hline
+					$S-box(x)$&1b&5&8&12&1d&3&6&1c\\
+					\hline\hline
+					$x$&10&11&12&13&14&15&16&17\\
+					\hline
+					$S-box(x)$&1e&13&7&e&0&d&11&18\\
+					\hline\hline
+					$x$&18&19&1a&1b&1c&1d&1e&1f\\
+					\hline
+					$S-box(x)$&10&c&1&19&16&a&f&17\\
+					\hline
+				\end{tabular}
+				\caption{Lookup table for the 5-bit S-box}
+				\label{lookup_sbox}
+			\end{figure}
+	\end{frame}
+		
+	\begin{frame}[fragile]	
+	\frametitle{Permutation (4), $p_S$}
+			\begin{figure}[H]
+				\begin{lstlisting}[style=CStyle]
+					state[0] ^= state[4];
+					state[4] ^= state[3];
+					state[2] ^= state[1];
+					uint64_t t0 = ~state[0];
+					uint64_t t1 = ~state[1];
+					uint64_t t2 = ~state[2];
+					uint64_t t3 = ~state[3];
+					uint64_t t4 = ~state[4];
+					t0 &= state[1];
+					t1 &= state[2];
+					t2 &= state[3];
+					t3 &= state[4];
+					t4 &= state[0];
+					state[0] ^= t1
+					; state[1] ^= t2;
+					state[2] ^= t3;
+					state[3] ^= t4;
+					state[4] ^= t0;
+					state[1] ^= state[0];
+					state[0] ^= state[4];
+					state[3] ^= state[2];
+					state[2] =~ state[2];
+				\end{lstlisting}
+				\caption{Equations to compute the S-box}
+				\label{equations_sbox}
+			\end{figure}
+			
+	\end{frame}
+		
+	\begin{frame}
+		\frametitle{Permutation (5), $p_L$}
+		Diffusion: $S_i \leftarrow \Sigma_i(S_i)$:
+		
+		\begin{gather*}
+			\Sigma_0(S_0) = S_0 \oplus (S_0 >>> 19) \oplus (S_0 >>> 28)\\
+			\Sigma_1(S_1) = S_1 \oplus (S_1 >>> 61) \oplus (S_1 >>> 39)\\
+			\Sigma_2(S_2) = S_2 \oplus (S_2 >>> \;  1) \oplus (S_2 >>> \; 6)\\
+			\Sigma_3(S_3) = S_3 \oplus (S_3 >>> 10) \oplus (S_3 >>> 17)\\
+			\Sigma_4(S_4) = S_4 \oplus (S_4 >>> \; 7) \oplus (S_4 >>> 41)\\
+		\end{gather*}
+	\end{frame}		
+	
 	
 	\section{Equations for linking the output of the S-box to the key}
 	\begin{frame}
